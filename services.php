@@ -1,7 +1,7 @@
 <html>
 	<head>
 		<link rel="stylesheet" type="text/css" href="design.css">
-		<link rel="stylesheet" type="text/css" href="index.css">
+		<link rel="stylesheet" type="text/css" href="services.css">
 		<title>linux-webui - Linux Server Control Panel</title>
 	</head>
     <body>
@@ -67,6 +67,16 @@
         	</div>
         	<div class="body">
         		<div>&nbsp;</div>
+        		<div class="body_content">
+        			<table class="body_table">
+        				<tr>
+        					<th>Service</th>
+        					<th>Status</th>
+        					<th>Memory usage</th>
+        					<th>Operations</th>
+        				</tr>
+        			</table>
+        		</div>
         	</div>
             <div class="push"></div>
         </div>
