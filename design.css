@@ -39,10 +39,10 @@ border-right-color: #A4A4A4;
 .header_button_text {
 margin-left: 10px;
 margin-right: 10px;
-color: #8258FA;
+//color: #8258FA;
 }
 #header_brand_text {
-color: #8258FA;
+//color: #8258FA;
 }
 .footer, .push {
 height: 2em;

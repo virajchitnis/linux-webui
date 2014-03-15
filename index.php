@@ -12,17 +12,17 @@
         				<td id="header_table_data_left">
         					<a href="."><div class="header_button">
         						<p>&nbsp;</p>
-        						<p class="header_button_text">Info</p>
+        						<h3 class="header_button_text">Info</h3>
         						<p>&nbsp;</p>
         					</div></a>
         					<div class="header_button">
 								<p>&nbsp;</p>
-        						<p class="header_button_text">NAS</p>
+        						<h3 class="header_button_text">NAS</h3>
         						<p>&nbsp;</p>
         					</div>
         				</td>
         				<td id="header_table_data_right">
-        					<p id="header_brand_text">linux-webui</p>
+        					<h3 id="header_brand_text">linux-webui</h3>
         				</td>
         			</tr>
         		</table>
