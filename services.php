@@ -75,6 +75,12 @@
         					<th>Memory usage</th>
         					<th>Operations</th>
         				</tr>
+        				<tr>
+        					<th>Apache2</th>
+        					<th> * status: started</th>
+        					<th>93 MB</th>
+        					<th>Restart | Stop</th>
+        				</tr>
         			</table>
         		</div>
         	</div>
