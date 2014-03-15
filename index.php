@@ -57,6 +57,12 @@
         				<h3>Memory Info</h3>
         				<?php echo "<pre>".shell_exec("free -m")."</pre>"; ?>
         			</div>
+        			<div class="body_content_box">
+        				<h3>Disk Info</h3>
+        				<?php echo "<pre>".shell_exec("df -h | grep Filesystem")."</pre>"; ?>
+        				<?php echo "<pre>".shell_exec("df -h | grep /dev/sd")."</pre>"; ?>
+        				<?php echo "<pre>".shell_exec("df -h | grep /dev/loop")."</pre>"; ?>
+        			</div>
         		</div>
         	</div>
             <div class="push"></div>
