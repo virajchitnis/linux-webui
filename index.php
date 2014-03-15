@@ -17,7 +17,17 @@
         					</div></a>
         					<div class="header_button">
 								<p>&nbsp;</p>
-        						<h3 class="header_button_text">NAS</h3>
+        						<h3 class="header_button_text">Storage</h3>
+        						<p>&nbsp;</p>
+        					</div>
+        					<div class="header_button">
+								<p>&nbsp;</p>
+        						<h3 class="header_button_text">Users</h3>
+        						<p>&nbsp;</p>
+        					</div>
+        					<div class="header_button">
+								<p>&nbsp;</p>
+        						<h3 class="header_button_text">Web</h3>
         						<p>&nbsp;</p>
         					</div>
         				</td>
