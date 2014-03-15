@@ -30,11 +30,17 @@
         						<h3 class="header_button_text">Users</h3>
         						<p>&nbsp;</p>
         					</div>
-        					<div class="header_button">
-								<p>&nbsp;</p>
-        						<h3 class="header_button_text">Web</h3>
-        						<p>&nbsp;</p>
-        					</div>
+        					<?php
+        						if (file_exists('web.php')) {
+        					?>
+        							<div class="header_button">
+										<p>&nbsp;</p>
+        								<h3 class="header_button_text">Web</h3>
+        								<p>&nbsp;</p>
+        							</div>
+        					<?php
+        						}
+        					?>
         					<div id="header_button_last">
 								<p>&nbsp;</p>
 								<h3>&nbsp;</h3>
