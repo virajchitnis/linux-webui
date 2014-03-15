@@ -4,6 +4,12 @@ margin: 0;
 html, body {
 height: 100%;
 }
+h3 {
+font-family: "Courier New", Courier, monospace;
+}
+p {
+font-family: "Courier New", Courier, monospace;
+}
 .wrapper {
 min-height: 100%;
 height: auto !important;
