@@ -36,20 +36,21 @@ float: left;
 min-width: 100px;
 text-align: center;
 border-left-style: solid;
-border-right-style: solid;
 border-left-width: 1px;
-border-right-width: 1px;
 border-left-color: #A4A4A4;
-border-right-color: #A4A4A4;
 }
 .header_button:hover {
 border-style: outset;
 border-color: #A4A4A4;
 border-width: 1px;
 border-left-style: outset;
-border-right-style: outset;
 border-left-width: 1px;
-border-right-width: 1px;
+}
+#header_button_last {
+float: left;
+border-left-style: solid;
+border-left-width: 1px;
+border-left-color: #A4A4A4;
 }
 .header_button_text {
 margin-left: 10px;

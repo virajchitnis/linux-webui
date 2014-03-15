@@ -35,6 +35,9 @@
         						<h3 class="header_button_text">Web</h3>
         						<p>&nbsp;</p>
         					</div>
+        					<div id="header_button_last">
+								<p>&nbsp;</p>
+        					</div>
         				</td>
         				<td id="header_table_data_right">
         					<h3 id="header_brand_text">linux-webui</h3>
