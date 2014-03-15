@@ -32,6 +32,7 @@
         		<div class="body_content">
         			<div class="body_content_box">
         				<h3>OS Info</h3>
+        					<?php echo "<pre>Distro: ".shell_exec('./shellscripts/linuxdistro.sh')."</pre>"; ?>
         					<?php echo "<pre>Hostname: ".shell_exec('uname -n')."</pre>"; ?>
         			</div>
         		</div>
