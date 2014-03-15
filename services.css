@@ -5,3 +5,6 @@ margin-right: 1cm;
 .body_table {
 width: 100%;
 }
+.body_table_data {
+text-align: center;
+}

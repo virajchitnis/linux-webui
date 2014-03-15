@@ -70,16 +70,16 @@
         		<div class="body_content">
         			<table class="body_table">
         				<tr>
-        					<th>Service</th>
-        					<th>Status</th>
-        					<th>Memory usage</th>
-        					<th>Operations</th>
+        					<th class="body_table_data">Service</th>
+        					<th class="body_table_data">Status</th>
+        					<th class="body_table_data">Memory usage</th>
+        					<th class="body_table_data">Operations</th>
         				</tr>
         				<tr>
-        					<td>Apache2</td>
-        					<td> * status: started</td>
-        					<td>93 MB</td>
-        					<td>
+        					<td class="body_table_data">Apache2</td>
+        					<td class="body_table_data"> * status: started</td>
+        					<td class="body_table_data">93 MB</td>
+        					<td class="body_table_data">
         						<button>Restart</button>
         						<button>Stop</button>
         					</td>
