@@ -34,6 +34,8 @@
         				<h3>OS Info</h3>
         					<?php echo "<pre>Distro: ".shell_exec('./shellscripts/linuxdistro.sh')."</pre>"; ?>
         					<?php echo "<pre>Hostname: ".shell_exec('uname -n')."</pre>"; ?>
+        					<?php echo "<pre>Kernel: ".shell_exec('uname -r')."</pre>"; ?>
+        					<?php echo "<pre>Uptime: ".shell_exec("uptime | awk '{print $3,$4,$5}' | sed 's/,$//'")."</pre>"; ?>
         			</div>
         		</div>
         	</div>
