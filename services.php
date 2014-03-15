@@ -9,22 +9,63 @@
         		<table class="header_table">
         			<tr>
         				<td id="header_table_data_left">
-        					<div class="header_button">
+        					<a href="."><div class="header_button">
         						<p>&nbsp;</p>
-        						<p class="header_button_text">Info</p>
+        						<h3 class="header_button_text">Info</h3>
         						<p>&nbsp;</p>
-        					</div>
-        					<div class="header_button">
+        					</div></a>
+        					<?php
+        						if (file_exists('services.php')) {
+        					?>
+        							<a href="services.php"><div class="header_button">
+										<p>&nbsp;</p>
+        								<h3 class="header_button_text">Services</h3>
+        								<p>&nbsp;</p>
+        							</div></a>
+        					<?php
+        						}
+        						if (file_exists('storage.php')) {
+        					?>
+        							<div class="header_button">
+										<p>&nbsp;</p>
+        								<h3 class="header_button_text">Storage</h3>
+        								<p>&nbsp;</p>
+        							</div>
+        					<?php
+        						}
+        						if (file_exists('users.php')) {
+        					?>
+        							<div class="header_button">
+										<p>&nbsp;</p>
+        								<h3 class="header_button_text">Users</h3>
+        								<p>&nbsp;</p>
+        							</div>
+        					<?php
+        						}
+        						if (file_exists('web.php')) {
+        					?>
+        							<div class="header_button">
+										<p>&nbsp;</p>
+        								<h3 class="header_button_text">Web</h3>
+        								<p>&nbsp;</p>
+        							</div>
+        					<?php
+        						}
+        					?>
+        					<div id="header_button_last">
 								<p>&nbsp;</p>
-        						<p class="header_button_text">NAS</p>
-        						<p>&nbsp;</p>
+								<h3>&nbsp;</h3>
+								<p>&nbsp;</p>
         					</div>
         				</td>
         				<td id="header_table_data_right">
-        					<p id="header_brand_text">linux-webui</p>
+        					<h3 id="header_brand_text">linux-webui</h3>
         				</td>
         			</tr>
         		</table>
+        	</div>
+        	<div class="body">
+        		<div>&nbsp;</div>
         	</div>
             <div class="push"></div>
         </div>

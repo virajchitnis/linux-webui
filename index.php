@@ -18,11 +18,11 @@
         					<?php
         						if (file_exists('services.php')) {
         					?>
-        							<div class="header_button">
+        							<a href="services.php"><div class="header_button">
 										<p>&nbsp;</p>
         								<h3 class="header_button_text">Services</h3>
         								<p>&nbsp;</p>
-        							</div>
+        							</div></a>
         					<?php
         						}
         						if (file_exists('storage.php')) {
