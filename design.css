@@ -27,6 +27,9 @@ text-align: center;
 }
 .header_button {
 float: left;
+border-style: solid;
+border-width: 2px;
+border-color: #F2F2F2;
 }
 .header_button_text {
 margin-left: 10px;
