@@ -75,6 +75,21 @@
         					<th class="body_table_data">Memory usage</th>
         					<th class="body_table_data">Operations</th>
         				</tr>
+        				<?php
+        					if ((exec('./shellscripts/apacheinstalled.sh')) == 'true') {
+        				?>
+        						<tr>
+        							<td class="body_table_data">Apache2</td>
+        							<td class="body_table_data"><?php echo shell_exec('sudo service apache2 status'); ?></td>
+        							<td class="body_table_data">93 MB</td>
+        							<td class="body_table_data">
+        								<button>Restart</button>
+        								<button>Stop</button>
+        							</td>
+        						</tr>
+        				<?php
+        					}
+        				?>
         				<tr>
         					<td class="body_table_data">Apache2</td>
         					<td class="body_table_data"> * status: started</td>
