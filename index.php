@@ -65,6 +65,11 @@
         				<?php echo "<pre>".shell_exec("df -h | grep /dev/loop")."</pre>"; ?>
         				<?php echo "<pre>&nbsp;</pre>"; ?>
         			</div>
+        			<div class="body_content_box">
+        				<h3>Logged in users</h3>
+        				<?php echo "<pre>".shell_exec("w")."</pre>"; ?>
+        				<?php echo "<pre>&nbsp;</pre>"; ?>
+        			</div>
         		</div>
         	</div>
             <div class="push"></div>
