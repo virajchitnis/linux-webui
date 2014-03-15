@@ -12,6 +12,7 @@ margin: 0 auto -2em;
 }
 .header {
 width: 100%;
+color: #FFFFFF;
 background-color: #088A68;
 }
 .header_table {
@@ -28,7 +29,7 @@ text-align: center;
 .header_button {
 float: left;
 border-style: solid;
-border-width: 2px;
+border-width: 1px;
 border-color: #F2F2F2;
 }
 .header_button_text {
