@@ -19,6 +19,11 @@
         						<p class="header_button_text">NAS</p>
         						<p>&nbsp;</p>
         					</div>
+        					<div class="header_button">
+								<p>&nbsp;</p>
+        						<p class="header_button_text">Test super long button name</p>
+        						<p>&nbsp;</p>
+        					</div>
         				</td>
         				<td id="header_table_data_right">
         					<p id="header_brand_text">linux-webui</p>
