@@ -10,12 +10,12 @@
         				<td id="header_table_data_left">
         					<div class="header_button">
         						<p>&nbsp;</p>
-        						<p>Test button 1</p>
+        						<p class="header_button_text">Test button 1</p>
         						<p>&nbsp;</p>
         					</div>
         					<div class="header_button">
 								<p>&nbsp;</p>
-        						<p>Test button 2</p>
+        						<p class="header_button_text">Test button 2</p>
         						<p>&nbsp;</p>
         					</div>
         				</td>
