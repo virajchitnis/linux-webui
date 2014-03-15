@@ -10,11 +10,11 @@
         		<table class="header_table">
         			<tr>
         				<td id="header_table_data_left">
-        					<div class="header_button">
+        					<a href="."><div class="header_button">
         						<p>&nbsp;</p>
         						<p class="header_button_text">Info</p>
         						<p>&nbsp;</p>
-        					</div>
+        					</div></a>
         					<div class="header_button">
 								<p>&nbsp;</p>
         						<p class="header_button_text">NAS</p>
