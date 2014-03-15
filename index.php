@@ -15,22 +15,34 @@
         						<h3 class="header_button_text">Info</h3>
         						<p>&nbsp;</p>
         					</div></a>
-        					<div class="header_button">
-								<p>&nbsp;</p>
-        						<h3 class="header_button_text">Services</h3>
-        						<p>&nbsp;</p>
-        					</div>
-        					<div class="header_button">
-								<p>&nbsp;</p>
-        						<h3 class="header_button_text">Storage</h3>
-        						<p>&nbsp;</p>
-        					</div>
-        					<div class="header_button">
-								<p>&nbsp;</p>
-        						<h3 class="header_button_text">Users</h3>
-        						<p>&nbsp;</p>
-        					</div>
         					<?php
+        						if (file_exists('services.php')) {
+        					?>
+        							<div class="header_button">
+										<p>&nbsp;</p>
+        								<h3 class="header_button_text">Services</h3>
+        								<p>&nbsp;</p>
+        							</div>
+        					<?php
+        						}
+        						if (file_exists('nas.php')) {
+        					?>
+        							<div class="header_button">
+										<p>&nbsp;</p>
+        								<h3 class="header_button_text">Storage</h3>
+        								<p>&nbsp;</p>
+        							</div>
+        					<?php
+        						}
+        						if (file_exists('users.php')) {
+        					?>
+        							<div class="header_button">
+										<p>&nbsp;</p>
+        								<h3 class="header_button_text">Users</h3>
+        								<p>&nbsp;</p>
+        							</div>
+        					<?php
+        						}
         						if (file_exists('web.php')) {
         					?>
         							<div class="header_button">
