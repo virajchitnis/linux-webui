@@ -76,13 +76,13 @@
         					<th>Operations</th>
         				</tr>
         				<tr>
-        					<th>Apache2</th>
-        					<th> * status: started</th>
-        					<th>93 MB</th>
-        					<th>
+        					<td>Apache2</td>
+        					<td> * status: started</td>
+        					<td>93 MB</td>
+        					<td>
         						<button>Restart</button>
         						<button>Stop</button>
-        					</th>
+        					</td>
         				</tr>
         			</table>
         		</div>
