@@ -30,6 +30,7 @@
         		<div>&nbsp;</div>
         		<div class="body_content">
         			<div class="body_content_box">
+        				<h3>OS Info</h3>
         				<pre>
         					<?php echo "Hostname: ".shell_exec('uname -n'); ?>
         				</pre>
