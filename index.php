@@ -1,6 +1,7 @@
 <html>
 	<head>
 		<link rel="stylesheet" type="text/css" href="design.css">
+		<title>linux-webui - Linux Server Control Panel</title>
 	</head>
     <body>
         <div class="wrapper">
@@ -19,7 +20,7 @@
         						<p>&nbsp;</p>
         					</div>
         				</td>
-        				<td id="header_table_data_right">Test text</td>
+        				<td id="header_table_data_right">linux-webui</td>
         			</tr>
         		</table>
         	</div>
