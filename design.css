@@ -27,6 +27,7 @@ text-align: center;
 }
 .header_button {
 float: left;
+min-width: 100px;
 border-left-style: solid;
 border-right-style: solid;
 border-left-width: 1px;
