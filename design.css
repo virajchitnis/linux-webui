@@ -36,6 +36,10 @@ border-right-width: 1px;
 border-left-color: #A4A4A4;
 border-right-color: #A4A4A4;
 }
+.header_button:hover {
+border-style: outset;
+border-color: #A4A4A4;
+}
 .header_button_text {
 margin-left: 10px;
 margin-right: 10px;
