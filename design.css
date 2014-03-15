@@ -12,7 +12,7 @@ margin: 0 auto -2em;
 }
 .header {
 width: 100%;
-background-color: #088A68;
+background-color: #F2F2F2;
 }
 .header_text {
 color: #FFFFFF;
@@ -34,8 +34,8 @@ border-left-style: solid;
 border-right-style: solid;
 border-left-width: 1px;
 border-right-width: 1px;
-border-left-color: #F2F2F2;
-border-right-color: #F2F2F2;
+border-left-color: #A4A4A4;
+border-right-color: #A4A4A4;
 }
 .header_button_text {
 margin-left: 10px;
