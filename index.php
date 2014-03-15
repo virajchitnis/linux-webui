@@ -25,7 +25,7 @@
         							</div>
         					<?php
         						}
-        						if (file_exists('nas.php')) {
+        						if (file_exists('storage.php')) {
         					?>
         							<div class="header_button">
 										<p>&nbsp;</p>
