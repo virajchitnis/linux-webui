@@ -26,16 +26,6 @@
         			</tr>
         		</table>
         	</div>
-        	<div class="body">
-        		<div>&nbsp;</div>
-        		<div class="body_content">
-        			<div class="body_content_box">
-        				<pre>
-        					<?php echo "Hostname: ".shell_exec('uname -n'); ?>
-        				</pre>
-        			</div>
-        		</div>
-        	</div>
             <div class="push"></div>
         </div>
         <div class="footer">
