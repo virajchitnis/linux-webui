@@ -80,7 +80,7 @@
         				?>
         						<tr>
         							<td class="body_table_data">Apache2</td>
-        							<td class="body_table_data"><?php echo shell_exec('sudo service apache2 status'); ?></td>
+        							<td class="body_table_data"><?php echo exec('sudo service apache2 status'); ?></td>
         							<td class="body_table_data"><?php echo exec("sudo pmap $(pidof apache2 | awk '{print $1}') | tail -1 | awk '{print $2}'"); ?></td>
         							<td class="body_table_data">
         								<button>Restart</button>
@@ -90,15 +90,6 @@
         				<?php
         					}
         				?>
-        				<tr>
-        					<td class="body_table_data">Apache2</td>
-        					<td class="body_table_data"> * status: started</td>
-        					<td class="body_table_data">93 MB</td>
-        					<td class="body_table_data">
-        						<button>Restart</button>
-        						<button>Stop</button>
-        					</td>
-        				</tr>
         			</table>
         		</div>
         	</div>
