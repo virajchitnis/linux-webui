@@ -27,29 +27,29 @@
         						}
         						if (file_exists('storage.php')) {
         					?>
-        							<div class="header_button">
+        							<a href="storage.php"><div class="header_button">
 										<p>&nbsp;</p>
         								<h3 class="header_button_text">Storage</h3>
         								<p>&nbsp;</p>
-        							</div>
+        							</div></a>
         					<?php
         						}
         						if (file_exists('users.php')) {
         					?>
-        							<div class="header_button">
+        							<a href="users.php"><div class="header_button">
 										<p>&nbsp;</p>
         								<h3 class="header_button_text">Users</h3>
         								<p>&nbsp;</p>
-        							</div>
+        							</div></a>
         					<?php
         						}
         						if (file_exists('web.php')) {
         					?>
-        							<div class="header_button">
+        							<a href="web.php"><div class="header_button">
 										<p>&nbsp;</p>
         								<h3 class="header_button_text">Web</h3>
         								<p>&nbsp;</p>
-        							</div>
+        							</div></a>
         					<?php
         						}
         					?>
