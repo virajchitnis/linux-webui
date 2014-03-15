@@ -79,7 +79,10 @@
         					<th>Apache2</th>
         					<th> * status: started</th>
         					<th>93 MB</th>
-        					<th>Restart | Stop</th>
+        					<th>
+        						<button>Restart</button>
+        						<button>Stop</button>
+        					</th>
         				</tr>
         			</table>
         		</div>
