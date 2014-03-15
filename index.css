@@ -1,7 +1,8 @@
 .body {
-margin-left: 1cm;
-margin-right: 1cm;
+//margin-left: 1cm;
+//margin-right: 1cm;
 }
 .body_content_box {
+margin-left: 1cm;
 float: left;
 }
