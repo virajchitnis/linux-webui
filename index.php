@@ -20,7 +20,9 @@
         						<p>&nbsp;</p>
         					</div>
         				</td>
-        				<td id="header_table_data_right">linux-webui</td>
+        				<td id="header_table_data_right">
+        					<p id="header_brand_text">linux-webui</p>
+        				</td>
         			</tr>
         		</table>
         	</div>
