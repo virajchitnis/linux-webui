@@ -12,8 +12,10 @@ margin: 0 auto -2em;
 }
 .header {
 width: 100%;
-color: #FFFFFF;
 background-color: #088A68;
+}
+.header_text {
+color: #FFFFFF;
 }
 .header_table {
 width: 100%;
@@ -28,9 +30,12 @@ text-align: center;
 }
 .header_button {
 float: left;
-border-style: solid;
-border-width: 1px;
-border-color: #F2F2F2;
+border-left-style: solid;
+border-right-style: solid;
+border-left-width: 1px;
+border-right-width: 1px;
+border-left-color: #F2F2F2;
+border-right-color: #F2F2F2;
 }
 .header_button_text {
 margin-left: 10px;
