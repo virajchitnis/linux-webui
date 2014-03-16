@@ -11,10 +11,12 @@
         		<div>&nbsp;</div>
         		<div class="body_content">
         			<h3>linux-webui</h3>
-        			<p>Written and designed by Viraj Chitnis</p>
+        			<p>A simple web control panel for linux servers.</p>
         			<p>&nbsp;</p>
         			<p><?php echo exec("git describe"); ?></p>
         			<p><a href="gitupdate.php"><button>Update</button></a></p>
+        			<p>&nbsp;</p>
+        			<p>Written and designed by Viraj Chitnis</p>
         		</div>
         	</div>
             <div class="push"></div>
