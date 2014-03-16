@@ -561,6 +561,20 @@
         			</div>
         			<div>&nbsp;</div>
         			<iframe class="update_display" id="update_display"></iframe>
+        			<div class="update_management">
+        				<?php
+        					if ((exec("shellscripts/linuxdistro.sh")) == "Gentoo") {
+        				?>
+        						<button onclick="showGentoo()">Apply updates</button>
+        				<?php
+        					}
+        					else {
+        				?>
+        						<a href="shellscripts/applyupdates.php"><button>Apply updates</button></a>
+        				<?php
+        					}
+        				?>
+        			</div>
         		</div>
         	</div>
         	<div>&nbsp;</div>

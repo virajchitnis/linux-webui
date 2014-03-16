@@ -12,6 +12,7 @@ function checkUpdate () {
 	document.getElementById('update_display').src = "updates.php";
 	document.getElementById('check_update_button').onclick = hideUpdate;
 	document.getElementById('check_update_button').innerHTML = "Hide Updates";
+	document.getElementById('update_management').style.display = "block";
 }
 
 function hideUpdate () {
@@ -19,4 +20,9 @@ function hideUpdate () {
 	document.getElementById('update_display').style.display = "none";
 	document.getElementById('check_update_button').onclick = checkUpdate;
 	document.getElementById('check_update_button').innerHTML = "Check for updates";
+	document.getElementById('update_management').style.display = "none";
+}
+
+function showGentoo () {
+	alert("Testing Gentoo.");
 }
