@@ -7,9 +7,9 @@
 				document.getElementById('framedisplay').contentWindow.location.reload();
 			}
 		</script>
-		<?php exec("nohup ./shellscripts/gentoocheckupdates.sh >/tmp/linux-webui_updates.log 2>&1 &"); ?>
+		<?php exec("nohup ./gentoocheckupdates.sh >/tmp/linux-webui_updates.log 2>&1 &"); ?>
 	</head>
 	<body>
-		<iframe seamless id="framedisplay" style="width: 95%; height: 95%" src="shellscripts/catfile.php?file=/tmp/linux-webui_updates.log"></iframe>
+		<iframe seamless id="framedisplay" style="width: 95%; height: 95%" src="catfile.php?file=/tmp/linux-webui_updates.log"></iframe>
 	</body>
 </html>

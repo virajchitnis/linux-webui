@@ -9,7 +9,7 @@ function confirmReboot () {
 
 function checkUpdate () {
 	document.getElementById('update_display').style.display = "block";
-	document.getElementById('update_display').src = "updates.php";
+	document.getElementById('update_display').src = "shellscripts/updates.php";
 	document.getElementById('check_update_button').onclick = hideUpdate;
 	document.getElementById('check_update_button').innerHTML = "Hide Updates";
 	document.getElementById('update_management').style.display = "block";
@@ -22,6 +22,10 @@ function hideUpdate () {
 	document.getElementById('check_update_button').innerHTML = "Check for updates";
 	document.getElementById('update_management').style.display = "none";
 	document.getElementById('gentoo_notice').style.display = "none";
+}
+
+function applyUpdates () {
+	document.getElementById('update_display').src = "shellscripts/applyupdates.php";
 }
 
 function showGentoo () {

@@ -571,7 +571,7 @@
         					}
         					else {
         				?>
-        						<a href="shellscripts/applyupdates.php"><button>Apply updates</button></a>
+        						<button onclick="applyUpdates()">Apply updates</button>
         				<?php
         					}
         				?>
