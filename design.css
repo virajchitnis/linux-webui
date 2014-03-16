@@ -79,9 +79,6 @@ border-width: 1px;
 #header_brand_text {
 color: #000000;
 }
-#header_brand_text:hover {
-color: #F3F781;
-}
 .footer, .push {
 height: 2em;
 }

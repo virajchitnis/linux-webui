@@ -54,7 +54,9 @@
         	</td>
     		<td id="header_table_data_right">
     			<div class="header_brand_div">
+    				<p>&nbsp;</p>
     				<a href="about.php"><h3 id="header_brand_text">linux-webui</h3></a>
+    				<p>&nbsp;</p>
     			</div>
         	</td>
     	</tr>
