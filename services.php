@@ -285,6 +285,44 @@
         						</tr>
         				<?php
         					}
+        					if ((exec('./shellscripts/squidinstalled.sh')) == 'true') {
+        				?>
+        						<tr>
+        							<td class="body_table_data">Squid</td>
+        							<td class="body_table_data"><?php echo exec('sudo service squid status'); ?></td>
+        							<td class="body_table_data"><?php echo exec("sudo pmap $(pidof squid | awk '{print $1}') | tail -1 | awk '{print $2}'"); ?></td>
+        							<td class="body_table_data">
+        								<?php
+        									if ((exec("sudo service squid status | awk '{print $3}'")) == "started") {
+        								?>
+        										<a href="shellscripts/service_operation.php?service=squid&operation=restart"><button>Restart</button></a>
+        										<a href="shellscripts/service_operation.php?service=squid&operation=stop"><button>Stop</button></a>
+        								<?php
+        									}
+        									if ((exec("sudo service squid status | awk '{print $3}'")) == "stopped") {
+        								?>
+        										<a href="shellscripts/service_operation.php?service=squid&operation=start"><button>Start</button></a>
+        								<?php
+        									}
+        								?>
+        							</td>
+        							<td class="body_table_data">
+        								<?php
+        									if(!empty((exec("sudo rc-update show | grep squid")))) {
+        								?>
+        										Enabled
+        								<?php
+        									}
+        									else {
+        								?>
+        										Disabled
+        								<?php
+        									}
+        								?>
+        							</td>
+        						</tr>
+        				<?php
+        					}
         					if ((exec('./shellscripts/sshinstalled.sh')) == 'true') {
         				?>
         						<tr>
@@ -324,12 +362,6 @@
         				<?php
         					}
         				?>
-        				<tr>
-        					<td class="body_table_data">Squid</td>
-        					<td class="body_table_data">status</td>
-        					<td class="body_table_data">0K</td>
-        					<td class="body_table_data"></td>
-        				</tr>
         				<tr>
         					<td class="body_table_data">Cups</td>
         					<td class="body_table_data">status</td>
