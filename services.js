@@ -9,4 +9,11 @@ function confirmReboot () {
 
 function checkUpdate () {
 	document.getElementById('update_display').style.display = "block";
+	document.getElementById('check_update_button').onclick = "hideUpdate()";
+	document.getElementById('check_update_button').innerHTML = "Hide Updates";
+}
+
+function hideUpdate () {
+	document.getElementById('update_display').src = "";
+	document.getElementById('update_display').style.display = "none";
 }

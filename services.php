@@ -224,7 +224,7 @@
         			</table>
         			<div class="body_management">
         				<div>&nbsp;</div>
-        				<button onclick="checkUpdate()">Check for updates</button>
+        				<button id="check_update_button" onclick="checkUpdate()">Check for updates</button>
         				&nbsp;
         				<button onclick="confirmReboot()">Reboot</button>
         			</div>
