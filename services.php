@@ -276,6 +276,7 @@
         			<iframe class="update_display" id="update_display"></iframe>
         		</div>
         	</div>
+        	<div>&nbsp;</div>
             <div class="push"></div>
         </div>
         <?php include("footer.php"); ?>
