@@ -14,6 +14,7 @@
         			<p>Written and designed by Viraj Chitnis</p>
         			<p>&nbsp;</p>
         			<p><?php echo exec("git describe"); ?></p>
+        			<p><button>Update</button></p>
         		</div>
         	</div>
             <div class="push"></div>
