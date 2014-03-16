@@ -16,4 +16,6 @@ function checkUpdate () {
 function hideUpdate () {
 	document.getElementById('update_display').src = "";
 	document.getElementById('update_display').style.display = "none";
+	document.getElementById('check_update_button').onclick = checkUpdate;
+	document.getElementById('check_update_button').innerHTML = "Check for updates";
 }
