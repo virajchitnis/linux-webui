@@ -123,6 +123,30 @@
         						</tr>
         				<?php
         					}
+        					if ((exec('./shellscripts/dnsmasqinstalled.sh')) == 'true') {
+        				?>
+        						<tr>
+        							<td class="body_table_data">Dnsmasq</td>
+        							<td class="body_table_data"><?php echo exec('sudo service dnsmasq status'); ?></td>
+        							<td class="body_table_data"><?php echo exec("sudo pmap $(pidof dnsmasq | awk '{print $1}') | tail -1 | awk '{print $2}'"); ?></td>
+        							<td class="body_table_data">
+        								<?php
+        									if ((exec("sudo service dnsmasq status | awk '{print $3}'")) == "started") {
+        								?>
+        										<a href="shellscripts/service_operation.php?service=dnsmasq&operation=restart"><button>Restart</button></a>
+        										<a href="shellscripts/service_operation.php?service=dnsmasq&operation=stop"><button>Stop</button></a>
+        								<?php
+        									}
+        									if ((exec("sudo service dnsmasq status | awk '{print $3}'")) == "stopped") {
+        								?>
+        										<a href="shellscripts/service_operation.php?service=dnsmasq&operation=start"><button>Start</button></a>
+        								<?php
+        									}
+        								?>
+        							</td>
+        						</tr>
+        				<?php
+        					}
         					if ((exec('./shellscripts/sshinstalled.sh')) == 'true') {
         				?>
         						<tr>
