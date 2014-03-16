@@ -42,7 +42,7 @@
         							</td>
         							<td class="body_table_data">
         								<?php
-        									if(!empty((exec("sudo rc-update show | grep apache2"))) {
+        									if(!empty((exec("sudo rc-update show | grep apache2")))) {
         								?>
         										Enabled
         								<?php
