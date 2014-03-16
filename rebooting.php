@@ -29,7 +29,7 @@
         		<div>&nbsp;</div>
         		<div class="body_content">
         			<p>The server is rebooting, please wait<span id="progress_dots"></span></p>
-        			<p>The page will auto redirect once the rebooting is complete.</p>
+        			<p>The page will auto redirect after the server has started.</p>
         		</div>
         	</div>
             <div class="push"></div>
