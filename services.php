@@ -576,17 +576,6 @@
         					}
         				?>
         			</div>
-        			<?php
-        				if ((exec("shellscripts/linuxdistro.sh")) == "Gentoo") {
-        			?>
-        					<div>&nbsp;</div>
-        					<div class="gentoo_notice" id="gentoo_notice">
-        						<p>Applying updates via a web interface is not recommended on Gentoo. Please apply updates via SSH.</p>
-        					<div>
-        					<div>&nbsp;</div>
-        			<?php
-        				}
-        			?>
         		</div>
         	</div>
         	<div>&nbsp;</div>
