@@ -53,11 +53,11 @@
         	</div>
         	</td>
     		<td id="header_table_data_right">
-    			<div class="header_brand_div">
+    			<a href="about.php"><div class="header_brand_div">
     				<p>&nbsp;</p>
-    				<a href="about.php"><h3 id="header_brand_text">linux-webui</h3></a>
+    				<h3 id="header_brand_text">linux-webui</h3>
     				<p>&nbsp;</p>
-    			</div>
+    			</div></a>
         	</td>
     	</tr>
 	</table>
