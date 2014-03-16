@@ -583,7 +583,7 @@
         					<div class="gentoo_notice" id="gentoo_notice">
         						<p>Applying updates via a web interface is not recommended on Gentoo. Please apply updates via SSH.</p>
         					</div>
-        					<div>&nbsp;</div>
+        					<div class="gentoo_notice_space" id="gentoo_notice_space">&nbsp;</div>
         			<?php
         				}
         			?>
