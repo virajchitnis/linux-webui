@@ -221,6 +221,10 @@
         					}
         				?>
         			</table>
+        			<div>&nbsp;</div>
+        			<button>Check for updates</button>
+        			<div>&nbsp;</div>
+        			<button>Reboot</button>
         		</div>
         	</div>
             <div class="push"></div>
