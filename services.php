@@ -42,6 +42,30 @@
         						</tr>
         				<?php
         					}
+        					if ((exec('./shellscripts/btsyncinstalled.sh')) == 'true') {
+        				?>
+        						<tr>
+        							<td class="body_table_data">BitTorrent Sync</td>
+        							<td class="body_table_data"><?php echo exec('sudo service btsync status'); ?></td>
+        							<td class="body_table_data"><?php echo exec("sudo pmap $(pidof btsync | awk '{print $1}') | tail -1 | awk '{print $2}'"); ?></td>
+        							<td class="body_table_data">
+        								<?php
+        									if ((exec("sudo service btsync status | awk '{print $3}'")) == "started") {
+        								?>
+        										<a href="shellscripts/service_operation.php?service=btsync&operation=restart"><button>Restart</button></a>
+        										<a href="shellscripts/service_operation.php?service=btsync&operation=stop"><button>Stop</button></a>
+        								<?php
+        									}
+        									if ((exec("sudo service btsync status | awk '{print $3}'")) == "stopped") {
+        								?>
+        										<a href="shellscripts/service_operation.php?service=btsync&operation=start"><button>Start</button></a>
+        								<?php
+        									}
+        								?>
+        							</td>
+        						</tr>
+        				<?php
+        					}
         					if ((exec('./shellscripts/croninstalled.sh')) == 'true') {
         				?>
         						<tr>
