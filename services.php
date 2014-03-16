@@ -17,6 +17,7 @@
         					<th class="body_table_data">Status</th>
         					<th class="body_table_data">Memory usage</th>
         					<th class="body_table_data">Operations</th>
+        					<th class="body_table_data">Autostart</th>
         				</tr>
         				<?php
         					if ((exec('./shellscripts/apacheinstalled.sh')) == 'true') {
@@ -35,6 +36,20 @@
         									if ((exec("sudo service apache2 status | awk '{print $3}'")) == "stopped") {
         								?>
         										<a href="shellscripts/service_operation.php?service=apache2&operation=start"><button>Start</button></a>
+        								<?php
+        									}
+        								?>
+        							</td>
+        							<td class="body_table_data">
+        								<?php
+        									if(!empty((exec("sudo rc-update show | grep apache2"))) {
+        								?>
+        										Enabled
+        								<?php
+        									}
+        									else {
+        								?>
+        										Disabled
         								<?php
         									}
         								?>
