@@ -152,7 +152,7 @@
         						<tr>
         							<td class="body_table_data">Netatalk</td>
         							<td class="body_table_data"><?php echo exec('sudo service netatalk status'); ?></td>
-        							<td class="body_table_data"><?php echo exec("sudo pmap $(pidof netatalk | awk '{print $1}') | tail -1 | awk '{print $2}'"); ?></td>
+        							<td class="body_table_data"><?php echo exec("sudo pmap $(pidof afpd | awk '{print $1}') | tail -1 | awk '{print $2}'"); ?></td>
         							<td class="body_table_data">
         								<?php
         									if ((exec("sudo service netatalk status | awk '{print $3}'")) == "started") {
@@ -176,7 +176,7 @@
         						<tr>
         							<td class="body_table_data">NFS</td>
         							<td class="body_table_data"><?php echo exec('sudo service nfs status'); ?></td>
-        							<td class="body_table_data"><?php echo exec("sudo pmap $(pidof nfs | awk '{print $1}') | tail -1 | awk '{print $2}'"); ?></td>
+        							<td class="body_table_data"><?php echo exec("sudo pmap $(pidof nfsd | awk '{print $1}') | tail -1 | awk '{print $2}'"); ?></td>
         							<td class="body_table_data">
         								<?php
         									if ((exec("sudo service nfs status | awk '{print $3}'")) == "started") {
