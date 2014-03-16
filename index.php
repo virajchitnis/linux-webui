@@ -50,6 +50,10 @@
         				<?php echo "<pre>".shell_exec("w")."</pre>"; ?>
         				<?php echo "<pre>&nbsp;</pre>"; ?>
         			</div>
+        			<div class="body_content_box">
+        				<h3>Processes</h3>
+        				<?php echo "<pre>".shell_exec("top -b -n1")."</pre>"; ?>
+        			</div>
         		</div>
         	</div>
         	<div>&nbsp;</div>
