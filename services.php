@@ -227,6 +227,7 @@
         				&nbsp;
         				<a href="shellscripts/reboot.php?system=y"><button>Reboot</button></a>
         			</div>
+        			<div>&nbsp;</div>
         			<iframe class="update_display" id="update_display"></iframe>
         		</div>
         	</div>
