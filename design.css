@@ -71,6 +71,11 @@ color: #000000;
 .header_brand_div {
 text-align: center;
 }
+.header_brand_div:hover {
+border-style: outset;
+border-color: #A4A4A4;
+border-width: 1px;
+}
 #header_brand_text {
 color: #000000;
 }
