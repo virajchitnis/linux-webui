@@ -60,7 +60,7 @@
         					if ((exec('./shellscripts/avahiinstalled.sh')) == 'true') {
         				?>
         						<tr>
-        							<td class="body_table_data">SSH</td>
+        							<td class="body_table_data">Avahi</td>
         							<td class="body_table_data"><?php echo exec('sudo service avahi-daemon status'); ?></td>
         							<td class="body_table_data"><?php echo exec("sudo pmap $(pidof avahi-daemon | awk '{print $1}') | tail -1 | awk '{print $2}'"); ?></td>
         							<td class="body_table_data">
@@ -71,7 +71,7 @@
         										<a href="shellscripts/service_operation.php?service=avahi-daemon&operation=stop"><button>Stop</button></a>
         								<?php
         									}
-        									if ((exec("sudo service sshd status | awk '{print $3}'")) == "stopped") {
+        									if ((exec("sudo service avahi-daemon status | awk '{print $3}'")) == "stopped") {
         								?>
         										<a href="shellscripts/service_operation.php?service=avahi-daemon&operation=start"><button>Start</button></a>
         								<?php
