@@ -86,25 +86,13 @@
         								<?php
         									if ((exec("sudo service apache2 status | awk '{print $3}'")) == "started") {
         								?>
-        										<form class="service_operation_form" action="shellscripts/service_operation.php" method="post">
-        											<input type="hidden" name="service" value="apache2">
-        											<input type="hidden" name="operation" value="restart">
-        											<input type="submit" value="Restart">
-        										</form>
-        										<form action="shellscripts/service_operation.php" method="post">
-        											<input type="hidden" name="service" value="apache2">
-        											<input type="hidden" name="operation" value="stop">
-        											<input type="submit" value="Stop">
-        										</form>
+        										<a href="shellscripts/service_operation.php?service=apache2&operation=restart"><button>Restart</button></a>
+        										<a href="shellscripts/service_operation.php?service=apache2&operation=stop"><button>Stop</button></a>
         								<?php
         									}
         									if ((exec("sudo service apache2 status | awk '{print $3}'")) == "stopped") {
         								?>
-        										<form class="service_operation_form" action="shellscripts/service_operation.php" method="post">
-        											<input type="hidden" name="service" value="apache2">
-        											<input type="hidden" name="operation" value="start">
-        											<input type="submit" value="Start">
-        										</form>
+        										<a href="shellscripts/service_operation.php?service=apache2&operation=start"><button>Start</button></a>
         								<?php
         									}
         								?>

@@ -1,7 +1,7 @@
 <?php
-	if ((isset($_POST['service'])) && (isset($_POST['operand']))) {
-		$service = $_POST['service'];
-		$operand = $_POST['operand'];
+	if ((isset($_GET['service'])) && (isset($_GET['operand']))) {
+		$service = $_GET['service'];
+		$operand = $_GET['operand'];
 		exec("sudo service ".$service." ".$operand);
 	}
 	
