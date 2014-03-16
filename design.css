@@ -33,9 +33,8 @@ width: 100%;
 background-color: #F2F2F2;
 }
 .header_table {
-//width: 100%;
+width: 100%;
 margin-left: 1cm;
-margin-right: 0cm;
 }
 #header_table_data_left {
 width: 70%;
