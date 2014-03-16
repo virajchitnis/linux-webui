@@ -99,6 +99,30 @@
         						</tr>
         				<?php
         					}
+        					if ((exec('./shellscripts/croninstalled.sh')) == 'true') {
+        				?>
+        						<tr>
+        							<td class="body_table_data">Cron</td>
+        							<td class="body_table_data"><?php echo exec('sudo service cronie status'); ?></td>
+        							<td class="body_table_data"><?php echo exec("sudo pmap $(pidof cronie | awk '{print $1}') | tail -1 | awk '{print $2}'"); ?></td>
+        							<td class="body_table_data">
+        								<?php
+        									if ((exec("sudo service cronie status | awk '{print $3}'")) == "started") {
+        								?>
+        										<a href="shellscripts/service_operation.php?service=cronie&operation=restart"><button>Restart</button></a>
+        										<a href="shellscripts/service_operation.php?service=cronie&operation=stop"><button>Stop</button></a>
+        								<?php
+        									}
+        									if ((exec("sudo service cronie status | awk '{print $3}'")) == "stopped") {
+        								?>
+        										<a href="shellscripts/service_operation.php?service=cronie&operation=start"><button>Start</button></a>
+        								<?php
+        									}
+        								?>
+        							</td>
+        						</tr>
+        				<?php
+        					}
         					if ((exec('./shellscripts/sshinstalled.sh')) == 'true') {
         				?>
         						<tr>
