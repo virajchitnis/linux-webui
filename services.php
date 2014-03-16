@@ -399,6 +399,44 @@
         						</tr>
         				<?php
         					}
+        					if ((exec('./shellscripts/polipoinstalled.sh')) == 'true') {
+        				?>
+        						<tr>
+        							<td class="body_table_data">Polipo</td>
+        							<td class="body_table_data"><?php echo exec('sudo service polipo status'); ?></td>
+        							<td class="body_table_data"><?php echo exec("sudo pmap $(pidof polipo | awk '{print $1}') | tail -1 | awk '{print $2}'"); ?></td>
+        							<td class="body_table_data">
+        								<?php
+        									if ((exec("sudo service polipo status | awk '{print $3}'")) == "started") {
+        								?>
+        										<a href="shellscripts/service_operation.php?service=polipo&operation=restart"><button>Restart</button></a>
+        										<a href="shellscripts/service_operation.php?service=polipo&operation=stop"><button>Stop</button></a>
+        								<?php
+        									}
+        									if ((exec("sudo service polipo status | awk '{print $3}'")) == "stopped") {
+        								?>
+        										<a href="shellscripts/service_operation.php?service=polipo&operation=start"><button>Start</button></a>
+        								<?php
+        									}
+        								?>
+        							</td>
+        							<td class="body_table_data">
+        								<?php
+        									if(!empty((exec("sudo rc-update show | grep polipo")))) {
+        								?>
+        										Enabled
+        								<?php
+        									}
+        									else {
+        								?>
+        										Disabled
+        								<?php
+        									}
+        								?>
+        							</td>
+        						</tr>
+        				<?php
+        					}
         					if ((exec('./shellscripts/sambainstalled.sh')) == 'true') {
         				?>
         						<tr>
@@ -514,31 +552,6 @@
         				<?php
         					}
         				?>
-        				<tr>
-        				<tr>
-        					<td class="body_table_data">Bind9</td>
-        					<td class="body_table_data">status</td>
-        					<td class="body_table_data">0K</td>
-        					<td class="body_table_data"></td>
-        				</tr>
-        				<tr>
-        					<td class="body_table_data">Polipo</td>
-        					<td class="body_table_data">status</td>
-        					<td class="body_table_data">0K</td>
-        					<td class="body_table_data"></td>
-        				</tr>
-        				<tr>
-        					<td class="body_table_data">Lighttpd</td>
-        					<td class="body_table_data">status</td>
-        					<td class="body_table_data">0K</td>
-        					<td class="body_table_data"></td>
-        				</tr>
-        				<tr>
-        					<td class="body_table_data">Nginx</td>
-        					<td class="body_table_data">status</td>
-        					<td class="body_table_data">0K</td>
-        					<td class="body_table_data"></td>
-        				</tr>
         			</table>
         			<div class="body_management">
         				<div>&nbsp;</div>
