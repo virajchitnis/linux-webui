@@ -27,6 +27,5 @@ function hideUpdate () {
 
 function showGentoo () {
 	document.getElementById('gentoo_notice').style.display = "block";
-	document.getElementById('gentoo_notice_space').style.display = "block";
 	document.getElementById('update_management').style.display = "none";
 }
