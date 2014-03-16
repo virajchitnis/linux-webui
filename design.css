@@ -5,7 +5,7 @@ a {
 text-decoration:none;
 }
 a:hover {
-color: #F3F781;
+background-color: #F3F781;
 }
 html, body {
 height: 100%;
@@ -71,6 +71,9 @@ color: #000000;
 }
 #header_brand_text {
 color: #000000;
+}
+#header_brand_text:hover {
+background-color: #F3F781;
 }
 .footer, .push {
 height: 2em;
