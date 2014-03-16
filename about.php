@@ -11,7 +11,7 @@
         		<div>&nbsp;</div>
         		<div class="body_content">
         			<h3>linux-webui</h3>
-        			<h4>Written and designed by Viraj Chitnis</h4>
+        			<p>Written and designed by Viraj Chitnis</p>
         			<p>&nbsp;</p>
         			<p><?php echo exec("git describe"); ?></p>
         		</div>
