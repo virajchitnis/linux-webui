@@ -83,8 +83,31 @@
         							<td class="body_table_data"><?php echo exec('sudo service apache2 status'); ?></td>
         							<td class="body_table_data"><?php echo exec("sudo pmap $(pidof apache2 | awk '{print $1}') | tail -1 | awk '{print $2}'"); ?></td>
         							<td class="body_table_data">
-        								<button>Restart</button>
-        								<button>Stop</button>
+        								<?php
+        									if ((exec("sudo service apache2 status | awk '{print $3}'")) == "started") {
+        								?>
+        										<form action="shellscripts/service_operation.php" method="post">
+        											<input type="hidden" name="service" value="apache2">
+        											<input type="hidden" name="operation" value="restart">
+        											<input type="submit" value="Restart">
+        										</form>
+        										<form action="shellscripts/service_operation.php" method="post">
+        											<input type="hidden" name="service" value="apache2">
+        											<input type="hidden" name="operation" value="stop">
+        											<input type="submit" value="Stop">
+        										</form>
+        								<?php
+        									}
+        									if ((exec("sudo service apache2 status | awk '{print $3}'")) == "stopped") {
+        								?>
+        										<form action="shellscripts/service_operation.php" method="post">
+        											<input type="hidden" name="service" value="apache2">
+        											<input type="hidden" name="operation" value="start">
+        											<input type="submit" value="Start">
+        										</form>
+        								<?php
+        									}
+        								?>
         							</td>
         						</tr>
         				<?php
