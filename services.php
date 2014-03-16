@@ -224,6 +224,7 @@
         			<div class="body_management">
         				<div>&nbsp;</div>
         				<button>Check for updates</button>
+        				&nbsp;
         				<button>Reboot</button>
         			</div>
         		</div>
