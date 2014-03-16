@@ -2,7 +2,7 @@
 	<head>
 		<link rel="stylesheet" type="text/css" href="css/design.css">
 		<link rel="stylesheet" type="text/css" href="css/about.css">
-		<script src="js/rebooting.js></script>
+		<script src="js/rebooting.js"></script>
 		<title>linux-webui - Linux Server Control Panel</title>
 	</head>
     <body>
