@@ -13,7 +13,17 @@
         			<h3>linux-webui</h3>
         			<p>A simple web control panel for linux servers.</p>
         			<p>&nbsp;</p>
-        			<p><?php echo exec("git describe"); ?></p>
+        			<?php
+        				$git_branch = exec("git branch | grep '*' | awk '{print $2}'");
+        				$branch;
+        				if ($git_branch = "master") {
+        					$branch = "stable";
+        				}
+        				else {
+        					$branch = $git_branch;
+        				}
+        			?>
+        			<p><?php echo exec("git describe"); ?> (<?php echo $branch; ?>)</p>
         			<p><a href="gitupdate.php"><button>Update</button></a></p>
         			<p>&nbsp;</p>
         			<p>Written and designed by Viraj Chitnis</p>
