@@ -225,7 +225,7 @@
         				<div>&nbsp;</div>
         				<button>Check for updates</button>
         				&nbsp;
-        				<button>Reboot</button>
+        				<a href="shellscripts/reboot.php?system=y"><button>Reboot</button></a>
         			</div>
         		</div>
         	</div>
