@@ -28,8 +28,8 @@
         			</div>
         			<div class="body_content_box">
         				<h3>IP Addresses</h3>
+        				<?php echo "<pre>".exec("curl -s icanhazip.com")."</pre>"; ?>
         				<?php echo "<pre>".shell_exec("ifconfig | grep \"inet \" | awk '{print $2}'")."</pre>"; ?>
-        				<?php echo "<pre>&nbsp;</pre>"; ?>
         				<?php echo "<pre>&nbsp;</pre>"; ?>
         				<?php echo "<pre>&nbsp;</pre>"; ?>
         			</div>
