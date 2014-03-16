@@ -9,5 +9,5 @@ width: 100%;
 text-align: center;
 }
 .service_operation_form {
-float: left;
+display: inline-block;
 }
