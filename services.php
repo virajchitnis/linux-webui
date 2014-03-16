@@ -1,13 +1,13 @@
 <html>
 	<head>
-		<link rel="stylesheet" type="text/css" href="design.css">
-		<link rel="stylesheet" type="text/css" href="services.css">
-		<script src="services.js"></script>
+		<link rel="stylesheet" type="text/css" href="css/design.css">
+		<link rel="stylesheet" type="text/css" href="css/services.css">
+		<script src="js/services.js"></script>
 		<title>linux-webui - Linux Server Control Panel</title>
 	</head>
     <body>
         <div class="wrapper">
-        	<?php include("header.php"); ?>
+        	<?php include("common/header.php"); ?>
         	<div class="body">
         		<div>&nbsp;</div>
         		<div class="body_content">
@@ -590,6 +590,6 @@
         	<div>&nbsp;</div>
             <div class="push"></div>
         </div>
-        <?php include("footer.php"); ?>
+        <?php include("common/footer.php"); ?>
     </body>
 </html>

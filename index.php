@@ -1,12 +1,12 @@
 <html>
 	<head>
-		<link rel="stylesheet" type="text/css" href="design.css">
-		<link rel="stylesheet" type="text/css" href="index.css">
+		<link rel="stylesheet" type="text/css" href="css/design.css">
+		<link rel="stylesheet" type="text/css" href="css/index.css">
 		<title>linux-webui - Linux Server Control Panel</title>
 	</head>
     <body>
         <div class="wrapper">
-        	<?php include("header.php"); ?>
+        	<?php include("common/header.php"); ?>
         	<div class="body">
         		<div>&nbsp;</div>
         		<div class="body_content">
@@ -55,6 +55,6 @@
         	<div>&nbsp;</div>
             <div class="push"></div>
         </div>
-        <?php include("footer.php"); ?>
+        <?php include("common/footer.php"); ?>
     </body>
 </html>
