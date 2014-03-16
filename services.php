@@ -2,6 +2,7 @@
 	<head>
 		<link rel="stylesheet" type="text/css" href="design.css">
 		<link rel="stylesheet" type="text/css" href="services.css">
+		<script src="services.js"></script>
 		<title>linux-webui - Linux Server Control Panel</title>
 	</head>
     <body>
@@ -225,7 +226,7 @@
         				<div>&nbsp;</div>
         				<button>Check for updates</button>
         				&nbsp;
-        				<a href="shellscripts/reboot.php?system=y"><button>Reboot</button></a>
+        				<button onclick="confirmReboot()">Reboot</button>
         			</div>
         			<div>&nbsp;</div>
         			<iframe class="update_display" id="update_display"></iframe>
