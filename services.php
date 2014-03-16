@@ -61,7 +61,7 @@
         					</div>
         				</td>
         				<td id="header_table_data_right">
-        					<h3 id="header_brand_text">linux-webui</h3>
+        					<a href="about.php"><h3 id="header_brand_text">linux-webui</h3></a>
         				</td>
         			</tr>
         		</table>
