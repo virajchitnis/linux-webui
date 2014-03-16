@@ -14,3 +14,7 @@ display: inline-block;
 .body_management {
 text-align: center;
 }
+.update_display {
+width: 100%;
+height: 100%;
+}
