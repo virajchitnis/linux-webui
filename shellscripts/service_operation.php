@@ -1,7 +1,7 @@
 <?php
 	if ((isset($_GET['service'])) && (isset($_GET['operation']))) {
 		$service = $_GET['service'];
-		$operand = $_GET['operation'];
+		$operation = $_GET['operation'];
 		exec("sudo service ".$service." ".$operation);
 	}
 	
