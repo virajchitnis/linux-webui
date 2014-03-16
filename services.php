@@ -104,7 +104,7 @@
         						<tr>
         							<td class="body_table_data">Cron</td>
         							<td class="body_table_data"><?php echo exec('sudo service cronie status'); ?></td>
-        							<td class="body_table_data"><?php echo exec("sudo pmap $(pidof cronie | awk '{print $1}') | tail -1 | awk '{print $2}'"); ?></td>
+        							<td class="body_table_data"><?php echo exec("sudo pmap $(pidof crond | awk '{print $1}') | tail -1 | awk '{print $2}'"); ?></td>
         							<td class="body_table_data">
         								<?php
         									if ((exec("sudo service cronie status | awk '{print $3}'")) == "started") {
