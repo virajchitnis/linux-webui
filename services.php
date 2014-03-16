@@ -561,6 +561,7 @@
         			</div>
         			<div>&nbsp;</div>
         			<iframe class="update_display" id="update_display"></iframe>
+        			<div>&nbsp;</div>
         			<div class="update_management" id="update_management">
         				<?php
         					if ((exec("shellscripts/linuxdistro.sh")) == "Gentoo") {
@@ -575,6 +576,17 @@
         					}
         				?>
         			</div>
+        			<?php
+        				if ((exec("shellscripts/linuxdistro.sh")) == "Gentoo") {
+        			?>
+        					<div>&nbsp;</div>
+        					<div class="gentoo_notice" id="gentoo_notice">
+        						<p>Applying updates via a web interface is not recommended on Gentoo. Please apply updates via SSH.</p>
+        					<div>
+        					<div>&nbsp;</div>
+        			<?php
+        				}
+        			?>
         		</div>
         	</div>
         	<div>&nbsp;</div>
