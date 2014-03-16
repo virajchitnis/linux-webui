@@ -87,12 +87,35 @@
         									if ((exec("sudo service apache2 status | awk '{print $3}'")) == "started") {
         								?>
         										<a href="shellscripts/service_operation.php?service=apache2&operation=restart"><button>Restart</button></a>
-        										<a href="shellscripts/service_operation.php?service=apache2&operation=stop"><button>Stop</button></a>
         								<?php
         									}
         									if ((exec("sudo service apache2 status | awk '{print $3}'")) == "stopped") {
         								?>
         										<a href="shellscripts/service_operation.php?service=apache2&operation=start"><button>Start</button></a>
+        								<?php
+        									}
+        								?>
+        							</td>
+        						</tr>
+        				<?php
+        					}
+        					if ((exec('./shellscripts/sshinstalled.sh')) == 'true') {
+        				?>
+        						<tr>
+        							<td class="body_table_data">SSH</td>
+        							<td class="body_table_data"><?php echo exec('sudo service sshd status'); ?></td>
+        							<td class="body_table_data"><?php echo exec("sudo pmap $(pidof sshd | awk '{print $1}') | tail -1 | awk '{print $2}'"); ?></td>
+        							<td class="body_table_data">
+        								<?php
+        									if ((exec("sudo service sshd status | awk '{print $3}'")) == "started") {
+        								?>
+        										<a href="shellscripts/service_operation.php?service=sshd&operation=restart"><button>Restart</button></a>
+        										<a href="shellscripts/service_operation.php?service=sshd&operation=stop"><button>Stop</button></a>
+        								<?php
+        									}
+        									if ((exec("sudo service sshd status | awk '{print $3}'")) == "stopped") {
+        								?>
+        										<a href="shellscripts/service_operation.php?service=sshd&operation=start"><button>Start</button></a>
         								<?php
         									}
         								?>
