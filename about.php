@@ -19,6 +19,7 @@
         			<p>Written and designed by Viraj Chitnis</p>
         		</div>
         	</div>
+        	<div>&nbsp;</div>
             <div class="push"></div>
         </div>
         <?php include("footer.php"); ?>

@@ -32,6 +32,7 @@
         			<p>The page will auto redirect after the server has started.</p>
         		</div>
         	</div>
+        	<div>&nbsp;</div>
             <div class="push"></div>
         </div>
         <?php include("footer.php"); ?>

@@ -41,7 +41,6 @@ width: 70%;
 }
 #header_table_data_right {
 width: 30%;
-text-align: center;
 }
 .header_button {
 float: left;
@@ -68,6 +67,10 @@ border-left-color: #A4A4A4;
 margin-left: 10px;
 margin-right: 10px;
 color: #000000;
+}
+.header_brand_div {
+text-align: center;
+width: 100%;
 }
 #header_brand_text {
 color: #000000;
