@@ -11,3 +11,6 @@ text-align: center;
 .service_operation_form {
 display: inline-block;
 }
+.management_button {
+text-align: center;
+}
