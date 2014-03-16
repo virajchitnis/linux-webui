@@ -9,6 +9,6 @@
 		</script>
 	</head>
 	<body>
-		<iframe seamless id="framedisplay" style="width: 100%, height: 100%" src="shellscripts/catfile.php?file=/tmp/sysinfo.cgi.log"></iframe>
+		<iframe seamless id="framedisplay" style="width: 100%; height: 100%" src="shellscripts/catfile.php?file=/tmp/sysinfo.cgi.log"></iframe>
 	</body>
 </html>
