@@ -211,6 +211,60 @@
         				<?php
         					}
         				?>
+        				<tr>
+        					<td class="body_table_data">Squid</td>
+        					<td class="body_table_data">status</td>
+        					<td class="body_table_data">0K</td>
+        					<td class="body_table_data"></td>
+        				</tr>
+        				<tr>
+        					<td class="body_table_data">Cups</td>
+        					<td class="body_table_data">status</td>
+        					<td class="body_table_data">0K</td>
+        					<td class="body_table_data"></td>
+        				</tr>
+        				<tr>
+        					<td class="body_table_data">Avahi</td>
+        					<td class="body_table_data">status</td>
+        					<td class="body_table_data">0K</td>
+        					<td class="body_table_data"></td>
+        				</tr>
+        				<tr>
+        					<td class="body_table_data">MySQL</td>
+        					<td class="body_table_data">status</td>
+        					<td class="body_table_data">0K</td>
+        					<td class="body_table_data"></td>
+        				</tr>
+        				<tr>
+        					<td class="body_table_data">Bind9</td>
+        					<td class="body_table_data">status</td>
+        					<td class="body_table_data">0K</td>
+        					<td class="body_table_data"></td>
+        				</tr>
+        				<tr>
+        					<td class="body_table_data">Polipo</td>
+        					<td class="body_table_data">status</td>
+        					<td class="body_table_data">0K</td>
+        					<td class="body_table_data"></td>
+        				</tr>
+        				<tr>
+        					<td class="body_table_data">Git Daemon</td>
+        					<td class="body_table_data">status</td>
+        					<td class="body_table_data">0K</td>
+        					<td class="body_table_data"></td>
+        				</tr>
+        				<tr>
+        					<td class="body_table_data">Lighttpd</td>
+        					<td class="body_table_data">status</td>
+        					<td class="body_table_data">0K</td>
+        					<td class="body_table_data"></td>
+        				</tr>
+        				<tr>
+        					<td class="body_table_data">Nginx</td>
+        					<td class="body_table_data">status</td>
+        					<td class="body_table_data">0K</td>
+        					<td class="body_table_data"></td>
+        				</tr>
         			</table>
         			<div class="body_management">
         				<div>&nbsp;</div>
