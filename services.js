@@ -22,7 +22,6 @@ function hideUpdate () {
 	document.getElementById('check_update_button').innerHTML = "Check for updates";
 	document.getElementById('update_management').style.display = "none";
 	document.getElementById('gentoo_notice').style.display = "none";
-	document.getElementById('gentoo_notice_space').style.display = "none";
 }
 
 function showGentoo () {
