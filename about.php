@@ -12,8 +12,6 @@
         	</div>
             <div class="push"></div>
         </div>
-        <div class="footer">
-            <p>&copy; 2014 Viraj Chitnis</p>
-        </div>
+        <?php include("footer.php"); ?>
     </body>
 </html>
