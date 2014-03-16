@@ -1,6 +1,6 @@
 <?php
 	if ((isset($_GET['system'])) && (($_GET['system']) == 'y')) {
-		exec("sudo reboot");
+		exec("nohup ./shellscripts/reboot.sh >/dev/null 2>&1 &");
 	}
 	
 	header('Location: ../rebooting.php');
