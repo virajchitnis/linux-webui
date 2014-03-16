@@ -10,8 +10,14 @@
 					window.location.href = 'services.php';
 				}
 				else {
-					document.getElementById("progress_dots").innerHTML += ".";
+					if (((count % 10) == 0) || (count == 1)) {
+						document.getElementById("progress_dots").innerHTML = ".";
+					}
+					else {
+						document.getElementById("progress_dots").innerHTML += ".";
+					}
 				}
+				count++;
 			}
 		</script>
 		<title>linux-webui - Linux Server Control Panel</title>
@@ -22,7 +28,7 @@
         	<div class="body">
         		<div>&nbsp;</div>
         		<div class="body_content">
-        			<p>The server is rebooting, please wait<span id="progress_dots">.</span></p>
+        			<p>The server is rebooting, please wait<span id="progress_dots"></span></p>
         			<p>The page will auto redirect once the rebooting is complete.</p>
         		</div>
         	</div>
