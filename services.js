@@ -6,3 +6,7 @@ function confirmReboot () {
 		// Do nothing
 	}
 }
+
+function checkUpdate () {
+	document.getElementById('update_display').style.display = block;
+}
