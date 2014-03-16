@@ -78,6 +78,20 @@
         									}
         								?>
         							</td>
+        							<td class="body_table_data">
+        								<?php
+        									if(!empty((exec("sudo rc-update show | grep btsync")))) {
+        								?>
+        										Enabled
+        								<?php
+        									}
+        									else {
+        								?>
+        										Disabled
+        								<?php
+        									}
+        								?>
+        							</td>
         						</tr>
         				<?php
         					}
@@ -98,6 +112,20 @@
         									if ((exec("sudo service cronie status | awk '{print $3}'")) == "stopped") {
         								?>
         										<a href="shellscripts/service_operation.php?service=cronie&operation=start"><button>Start</button></a>
+        								<?php
+        									}
+        								?>
+        							</td>
+        							<td class="body_table_data">
+        								<?php
+        									if(!empty((exec("sudo rc-update show | grep cronie")))) {
+        								?>
+        										Enabled
+        								<?php
+        									}
+        									else {
+        								?>
+        										Disabled
         								<?php
         									}
         								?>
@@ -126,6 +154,20 @@
         									}
         								?>
         							</td>
+        							<td class="body_table_data">
+        								<?php
+        									if(!empty((exec("sudo rc-update show | grep dnsmasq")))) {
+        								?>
+        										Enabled
+        								<?php
+        									}
+        									else {
+        								?>
+        										Disabled
+        								<?php
+        									}
+        								?>
+        							</td>
         						</tr>
         				<?php
         					}
@@ -146,6 +188,20 @@
         									if ((exec("sudo service netatalk status | awk '{print $3}'")) == "stopped") {
         								?>
         										<a href="shellscripts/service_operation.php?service=netatalk&operation=start"><button>Start</button></a>
+        								<?php
+        									}
+        								?>
+        							</td>
+        							<td class="body_table_data">
+        								<?php
+        									if(!empty((exec("sudo rc-update show | grep netatalk")))) {
+        								?>
+        										Enabled
+        								<?php
+        									}
+        									else {
+        								?>
+        										Disabled
         								<?php
         									}
         								?>
@@ -174,6 +230,20 @@
         									}
         								?>
         							</td>
+        							<td class="body_table_data">
+        								<?php
+        									if(!empty((exec("sudo rc-update show | grep nfs")))) {
+        								?>
+        										Enabled
+        								<?php
+        									}
+        									else {
+        								?>
+        										Disabled
+        								<?php
+        									}
+        								?>
+        							</td>
         						</tr>
         				<?php
         					}
@@ -198,6 +268,20 @@
         									}
         								?>
         							</td>
+        							<td class="body_table_data">
+        								<?php
+        									if(!empty((exec("sudo rc-update show | grep samba")))) {
+        								?>
+        										Enabled
+        								<?php
+        									}
+        									else {
+        								?>
+        										Disabled
+        								<?php
+        									}
+        								?>
+        							</td>
         						</tr>
         				<?php
         					}
@@ -218,6 +302,20 @@
         									if ((exec("sudo service sshd status | awk '{print $3}'")) == "stopped") {
         								?>
         										<a href="shellscripts/service_operation.php?service=sshd&operation=start"><button>Start</button></a>
+        								<?php
+        									}
+        								?>
+        							</td>
+        							<td class="body_table_data">
+        								<?php
+        									if(!empty((exec("sudo rc-update show | grep sshd")))) {
+        								?>
+        										Enabled
+        								<?php
+        									}
+        									else {
+        								?>
+        										Disabled
         								<?php
         									}
         								?>
