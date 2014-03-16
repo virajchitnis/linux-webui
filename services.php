@@ -57,6 +57,44 @@
         						</tr>
         				<?php
         					}
+        					if ((exec('./shellscripts/avahiinstalled.sh')) == 'true') {
+        				?>
+        						<tr>
+        							<td class="body_table_data">SSH</td>
+        							<td class="body_table_data"><?php echo exec('sudo service avahi-daemon status'); ?></td>
+        							<td class="body_table_data"><?php echo exec("sudo pmap $(pidof avahi-daemon | awk '{print $1}') | tail -1 | awk '{print $2}'"); ?></td>
+        							<td class="body_table_data">
+        								<?php
+        									if ((exec("sudo service avahi-daemon status | awk '{print $3}'")) == "started") {
+        								?>
+        										<a href="shellscripts/service_operation.php?service=avahi-daemon&operation=restart"><button>Restart</button></a>
+        										<a href="shellscripts/service_operation.php?service=avahi-daemon&operation=stop"><button>Stop</button></a>
+        								<?php
+        									}
+        									if ((exec("sudo service sshd status | awk '{print $3}'")) == "stopped") {
+        								?>
+        										<a href="shellscripts/service_operation.php?service=avahi-daemon&operation=start"><button>Start</button></a>
+        								<?php
+        									}
+        								?>
+        							</td>
+        							<td class="body_table_data">
+        								<?php
+        									if(!empty((exec("sudo rc-update show | grep avahi-daemon")))) {
+        								?>
+        										Enabled
+        								<?php
+        									}
+        									else {
+        								?>
+        										Disabled
+        								<?php
+        									}
+        								?>
+        							</td>
+        						</tr>
+        				<?php
+        					}
         					if ((exec('./shellscripts/btsyncinstalled.sh')) == 'true') {
         				?>
         						<tr>
@@ -369,11 +407,6 @@
         					<td class="body_table_data"></td>
         				</tr>
         				<tr>
-        					<td class="body_table_data">Avahi</td>
-        					<td class="body_table_data">status</td>
-        					<td class="body_table_data">0K</td>
-        					<td class="body_table_data"></td>
-        				</tr>
         				<tr>
         					<td class="body_table_data">MySQL</td>
         					<td class="body_table_data">status</td>
