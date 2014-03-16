@@ -8,5 +8,5 @@ function confirmReboot () {
 }
 
 function checkUpdate () {
-	document.getElementById('update_display').style.display = block;
+	document.getElementById('update_display').style.display = "block";
 }
