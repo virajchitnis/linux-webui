@@ -561,7 +561,7 @@
         			</div>
         			<div>&nbsp;</div>
         			<iframe class="update_display" id="update_display"></iframe>
-        			<div class="update_management">
+        			<div class="update_management" id="update_management">
         				<?php
         					if ((exec("shellscripts/linuxdistro.sh")) == "Gentoo") {
         				?>
