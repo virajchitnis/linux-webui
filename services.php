@@ -223,9 +223,8 @@
         			</table>
         			<div class="body_management">
         				<div>&nbsp;</div>
-        				<button class="management_buttons">Check for updates</button>
-        				<div>&nbsp;</div>
-        				<button class="management_buttons">Reboot</button>
+        				<button>Check for updates</button>
+        				<button>Reboot</button>
         			</div>
         		</div>
         	</div>
