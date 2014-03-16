@@ -5,5 +5,5 @@
 		exec("sudo service ".$service." ".$operation);
 	}
 	
-	header('Location ../services.php');
+	header('Location: ../services.php');
 ?>
