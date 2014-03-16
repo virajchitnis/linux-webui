@@ -52,7 +52,9 @@
         			</div>
         			<div class="body_content_box">
         				<h3>Processes</h3>
-        				<?php echo "<pre>".shell_exec("top -b -n1")."</pre>"; ?>
+        				<div class="body_content_processes">
+        					<iframe class="process_iframe" src="shellscripts/process.php"></iframe>
+        				</div>
         			</div>
         		</div>
         	</div>
