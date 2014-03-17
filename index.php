@@ -35,7 +35,7 @@
         			</div>
         			<div class="body_content_box">
         				<h3>CPU</h3>
-        				<?php echo "<pre>".exec("uptime | awk '{print $8,$9,$10,$11,$12}")."</pre>"; ?>
+        				<?php echo "<pre>".exec("uptime | awk '{print $8,$9,$10,$11,$12}'")."</pre>"; ?>
         				<?php echo "<pre>&nbsp;</pre>"; ?>
         			</div>
         			<div class="body_content_box">
