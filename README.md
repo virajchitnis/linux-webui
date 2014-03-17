@@ -1,5 +1,5 @@
-linux-webui
-===========
+linux-webui (beta)
+==================
 
 A simple web control panel for linux servers
 

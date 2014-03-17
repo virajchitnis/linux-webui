@@ -10,7 +10,7 @@
         	<div class="body">
         		<div>&nbsp;</div>
         		<div class="body_content">
-        			<h3>linux-webui</h3>
+        			<h3>linux-webui (beta)</h3>
         			<p>A simple web control panel for linux servers.</p>
         			<p>&nbsp;</p>
         			<?php
