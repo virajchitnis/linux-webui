@@ -21,8 +21,8 @@
         			<div class="body_content_box">
         				<h3>System Info</h3>
         				<?php echo "<pre>CPU: ".shell_exec("cat /proc/cpuinfo | grep \"model name\" | awk '{print $4,$5,$6,$7,$8,$9}' | tail -1")."</pre>"; ?>
+        				<?php echo "<pre>CPU Cores: ".exec("cat /proc/cpuinfo | grep processor | tail -1 | awk '{print $3+1}'")."</pre>"; ?>
         				<?php echo "<pre>RAM: ".exec("free -m | grep Mem | awk '{print $2}'")."MB</pre>"; ?>
-        				<?php echo "<pre>&nbsp;</pre>"; ?>
         				<?php echo "<pre>&nbsp;</pre>"; ?>
         				<?php echo "<pre>&nbsp;</pre>"; ?>
         			</div>
