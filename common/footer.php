@@ -1,3 +1,3 @@
 <div class="footer">
-	<p>&copy; 2014 Viraj Chitnis</p>
+	<p>Authored by Viraj Chitnis</p>
 </div>
