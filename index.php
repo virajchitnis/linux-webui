@@ -51,10 +51,6 @@
         				<?php echo "<pre>&nbsp;</pre>"; ?>
         			</div>
         		</div>
-        		<h3>Processes</h3>
-        		<div class="body_content_processes">
-        			<iframe class="process_iframe" src="shellscripts/process.php"></iframe>
-        		</div>
         	</div>
         	<div>&nbsp;</div>
             <div class="push"></div>
