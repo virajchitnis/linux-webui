@@ -24,7 +24,7 @@
         				}
         			?>
         			<p><?php echo exec("git describe"); ?> (<?php echo $branch; ?>)</p>
-        			<p><a href="gitupdate.php"><button>Update</button></a></p>
+        			<p><a href="shellscripts/gitupdate.php"><button>Update</button></a></p>
         			<p>&nbsp;</p>
         			<p>Written and designed by Viraj Chitnis</p>
         		</div>
