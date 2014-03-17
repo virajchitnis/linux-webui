@@ -14,18 +14,22 @@
         			<p>A simple web control panel for linux servers.</p>
         			<p>&nbsp;</p>
         			<?php
-        				$git_branch = exec("git branch | grep '*' | awk '{print $2}'");
-        				$branch;
-        				if ($git_branch == "master") {
-        					$branch = "stable";
-        				}
-        				else {
-        					$branch = $git_branch;
+        				if ((exec("./shellscripts/testgit.sh")) == "true") {
+        					$git_branch = exec("git branch | grep '*' | awk '{print $2}'");
+        					$branch;
+        					if ($git_branch == "master") {
+        						$branch = "stable";
+        					}
+        					else {
+        						$branch = $git_branch;
+        					}
+        			?>
+        					<p><?php echo exec("git describe"); ?> (<?php echo $branch; ?>)</p>
+        					<p><a href="shellscripts/gitupdate.php"><button>Update</button></a></p>
+        					<p>&nbsp;</p>
+        			<?php
         				}
         			?>
-        			<p><?php echo exec("git describe"); ?> (<?php echo $branch; ?>)</p>
-        			<p><a href="shellscripts/gitupdate.php"><button>Update</button></a></p>
-        			<p>&nbsp;</p>
         			<p>Written and designed by Viraj Chitnis</p>
         		</div>
         	</div>
