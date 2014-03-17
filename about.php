@@ -16,7 +16,7 @@
         			<?php
         				$git_branch = exec("git branch | grep '*' | awk '{print $2}'");
         				$branch;
-        				if ($git_branch = "master") {
+        				if ($git_branch == "master") {
         					$branch = "stable";
         				}
         				else {
