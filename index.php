@@ -34,13 +34,16 @@
         				<?php echo "<pre>&nbsp;</pre>"; ?>
         			</div>
         			<div class="body_content_box">
-        				<h3>CPU</h3>
-        				<?php echo "<pre>".exec("uptime | awk '{print $8,$9,$10,$11,$12}'")."</pre>"; ?>
+        				<h3>Memory</h3>
+        				<?php echo "<pre>".shell_exec("free -m")."</pre>"; ?>
         				<?php echo "<pre>&nbsp;</pre>"; ?>
         			</div>
         			<div class="body_content_box">
-        				<h3>Memory</h3>
-        				<?php echo "<pre>".shell_exec("free -m")."</pre>"; ?>
+        				<h3>CPU</h3>
+        				<?php echo "<pre>".exec("uptime | awk '{print $8,$9,$10,$11,$12}'")."</pre>"; ?>
+        				<?php echo "<pre>&nbsp;</pre>"; ?>
+        				<?php echo "<pre>&nbsp;</pre>"; ?>
+        				<?php echo "<pre>&nbsp;</pre>"; ?>
         				<?php echo "<pre>&nbsp;</pre>"; ?>
         			</div>
         			<div class="body_content_box">
