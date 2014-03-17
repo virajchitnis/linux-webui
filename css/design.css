@@ -66,6 +66,8 @@ border-left-width: 1px;
 border-left-color: #A4A4A4;
 }
 .header_button_text {
+margin-left: 10px;
+margin-right: 10px;
 color: #000000;
 }
 .header_brand_div {
