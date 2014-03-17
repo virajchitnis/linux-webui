@@ -1,4 +1,4 @@
 <?php
-	exec("sudo ./update.sh");
+	exec("cd ..; sudo ./shellscripts/update.sh");
 	header('Location: about.php');
 ?>
