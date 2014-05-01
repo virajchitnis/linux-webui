@@ -32,7 +32,7 @@ Installation via tar.gz (Not recommended)
 
 1. Install Apache
 2. Install PHP
-3. Download the tar.gz for the latest release version from GitHub into your web server directory by running 'wget https://github.com/virajchitnis/linux-webui/archive/v1.1.2.tar.gz' (replace v1.1.2 with the version you wish to download).
-4. Extract by running 'tar -zxvf v1.1.2.tar.gz'.
-5. Delete the downloaded tar.gz by running 'rm v1.1.2.tar.gz'
+3. Download the tar.gz for the latest release version from GitHub into your web server directory by running 'wget https://github.com/virajchitnis/linux-webui/archive/v1.1.3.tar.gz' (replace v1.1.3 with the version you wish to download).
+4. Extract by running 'tar -zxvf v1.1.3.tar.gz'.
+5. Delete the downloaded tar.gz by running 'rm v1.1.3.tar.gz'
 6. Future updates to the web application will have to be installed by downloading the tar.gz for the newer version of the application and then extracting it over the current version's folder.
