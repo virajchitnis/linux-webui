@@ -2,7 +2,7 @@ linux-webui (beta)
 ==================
 A simple web control panel for Linux servers.
 
-This project was originally developed and tested on Gentoo. Other distros will be tested as and when I have time (I am a student). Most Linux distros are quite similar to each other, so a most of the control panel should be functional on any distro. If you manage to get it working on some other distro, please let me know so that I can update the OS support info.
+This project was originally developed and tested on Gentoo. Most Linux distros are similar enough that the control panel should work on any of them. If you get it running on a distro not listed below, please open an issue so the OS support list can be updated.
 
 OS support
 ----------
