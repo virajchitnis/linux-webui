@@ -58,6 +58,11 @@
     				<h3 id="header_brand_text">linux-webui</h3>
     				<p>&nbsp;</p>
     			</div></a>
+    			<a href="logout.php"><div class="header_button">
+    				<p>&nbsp;</p>
+    				<h3 class="header_button_text">Logout</h3>
+    				<p>&nbsp;</p>
+    			</div></a>
         	</td>
     	</tr>
 	</table>

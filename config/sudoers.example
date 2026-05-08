@@ -1,0 +1,114 @@
+# linux-webui sudoers drop-in
+#
+# Grants the web server user only the specific commands linux-webui needs,
+# instead of the broad NOPASSWD: ALL that was previously required.
+#
+# BEFORE INSTALLING:
+#   1. Replace 'apache' below with your web server's user:
+#        Gentoo        -> apache
+#        Debian/Ubuntu -> www-data
+#        CentOS/RHEL   -> apache
+#
+#   2. Verify the path to 'service' on your system with: which service
+#        Gentoo/CentOS/RHEL  -> /sbin/service
+#        Debian/Ubuntu       -> /usr/sbin/service
+#      Update every /sbin/service line below if yours differs.
+#
+# INSTALLING:
+#   sudo cp config/sudoers.example /etc/sudoers.d/linux-webui
+#   sudo chmod 0440 /etc/sudoers.d/linux-webui
+#   sudo visudo -c                    # verify no syntax errors
+
+# ---------------------------------------------------------------------------
+# Service status, start, stop, restart
+# ---------------------------------------------------------------------------
+
+apache ALL=(root) NOPASSWD: /sbin/service apache2 status
+apache ALL=(root) NOPASSWD: /sbin/service apache2 start
+apache ALL=(root) NOPASSWD: /sbin/service apache2 stop
+apache ALL=(root) NOPASSWD: /sbin/service apache2 restart
+
+apache ALL=(root) NOPASSWD: /sbin/service avahi-daemon status
+apache ALL=(root) NOPASSWD: /sbin/service avahi-daemon start
+apache ALL=(root) NOPASSWD: /sbin/service avahi-daemon stop
+apache ALL=(root) NOPASSWD: /sbin/service avahi-daemon restart
+
+apache ALL=(root) NOPASSWD: /sbin/service btsync status
+apache ALL=(root) NOPASSWD: /sbin/service btsync start
+apache ALL=(root) NOPASSWD: /sbin/service btsync stop
+apache ALL=(root) NOPASSWD: /sbin/service btsync restart
+
+apache ALL=(root) NOPASSWD: /sbin/service cronie status
+apache ALL=(root) NOPASSWD: /sbin/service cronie start
+apache ALL=(root) NOPASSWD: /sbin/service cronie stop
+apache ALL=(root) NOPASSWD: /sbin/service cronie restart
+
+apache ALL=(root) NOPASSWD: /sbin/service cupsd status
+apache ALL=(root) NOPASSWD: /sbin/service cupsd start
+apache ALL=(root) NOPASSWD: /sbin/service cupsd stop
+apache ALL=(root) NOPASSWD: /sbin/service cupsd restart
+
+apache ALL=(root) NOPASSWD: /sbin/service dnsmasq status
+apache ALL=(root) NOPASSWD: /sbin/service dnsmasq start
+apache ALL=(root) NOPASSWD: /sbin/service dnsmasq stop
+apache ALL=(root) NOPASSWD: /sbin/service dnsmasq restart
+
+apache ALL=(root) NOPASSWD: /sbin/service git-daemon status
+apache ALL=(root) NOPASSWD: /sbin/service git-daemon start
+apache ALL=(root) NOPASSWD: /sbin/service git-daemon stop
+apache ALL=(root) NOPASSWD: /sbin/service git-daemon restart
+
+apache ALL=(root) NOPASSWD: /sbin/service mysql status
+apache ALL=(root) NOPASSWD: /sbin/service mysql start
+apache ALL=(root) NOPASSWD: /sbin/service mysql stop
+apache ALL=(root) NOPASSWD: /sbin/service mysql restart
+
+apache ALL=(root) NOPASSWD: /sbin/service netatalk status
+apache ALL=(root) NOPASSWD: /sbin/service netatalk start
+apache ALL=(root) NOPASSWD: /sbin/service netatalk stop
+apache ALL=(root) NOPASSWD: /sbin/service netatalk restart
+
+apache ALL=(root) NOPASSWD: /sbin/service nfs status
+apache ALL=(root) NOPASSWD: /sbin/service nfs start
+apache ALL=(root) NOPASSWD: /sbin/service nfs stop
+apache ALL=(root) NOPASSWD: /sbin/service nfs restart
+
+apache ALL=(root) NOPASSWD: /sbin/service polipo status
+apache ALL=(root) NOPASSWD: /sbin/service polipo start
+apache ALL=(root) NOPASSWD: /sbin/service polipo stop
+apache ALL=(root) NOPASSWD: /sbin/service polipo restart
+
+apache ALL=(root) NOPASSWD: /sbin/service samba status
+apache ALL=(root) NOPASSWD: /sbin/service samba start
+apache ALL=(root) NOPASSWD: /sbin/service samba stop
+apache ALL=(root) NOPASSWD: /sbin/service samba restart
+
+apache ALL=(root) NOPASSWD: /sbin/service squid status
+apache ALL=(root) NOPASSWD: /sbin/service squid start
+apache ALL=(root) NOPASSWD: /sbin/service squid stop
+apache ALL=(root) NOPASSWD: /sbin/service squid restart
+
+apache ALL=(root) NOPASSWD: /sbin/service sshd status
+apache ALL=(root) NOPASSWD: /sbin/service sshd start
+apache ALL=(root) NOPASSWD: /sbin/service sshd stop
+apache ALL=(root) NOPASSWD: /sbin/service sshd restart
+
+# ---------------------------------------------------------------------------
+# Memory usage display (services page)
+# pmap is read-only; a numeric PID argument is supplied at runtime
+# ---------------------------------------------------------------------------
+
+apache ALL=(root) NOPASSWD: /usr/bin/pmap
+
+# ---------------------------------------------------------------------------
+# Autostart status display (Gentoo / OpenRC only)
+# Only 'show' is permitted; rc-update add/delete are not allowed
+# ---------------------------------------------------------------------------
+
+apache ALL=(root) NOPASSWD: /sbin/rc-update show
+
+# ---------------------------------------------------------------------------
+# System reboot
+# ---------------------------------------------------------------------------
+
+apache ALL=(root) NOPASSWD: /sbin/reboot

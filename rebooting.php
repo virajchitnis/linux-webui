@@ -1,3 +1,7 @@
+<?php
+require_once __DIR__ . '/common/auth.php';
+require_auth();
+?>
 <html>
 	<head>
 		<link rel="stylesheet" type="text/css" href="css/design.css">
