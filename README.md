@@ -144,7 +144,7 @@ Installation via tar.gz (Not recommended)
    (Replace `v1.1.3` with the version you wish to download.)
 3. Extract: `tar -zxvf v1.1.3.tar.gz`
 4. Delete the archive: `rm v1.1.3.tar.gz`
-5. Follow steps 3–7 from the Git installation above.
+5. Follow steps 3–8 from the Git installation above.
 
 Future updates must be applied by downloading and extracting a newer tar.gz
 over the current directory. Using Git is strongly recommended as it allows
@@ -174,7 +174,7 @@ The following protections are built into this version of linux-webui:
 ### Remaining considerations
 
 * **HTTPS**: Strongly recommended. Session cookies and all control traffic are
-  sent in plaintext over HTTP. See step 6 above.
+  sent in plaintext over HTTP. See step 7 above.
 * **Shared NAT**: The IP-based brute-force lockout treats all users behind the
   same NAT address as one. On a shared network, one user's failed attempts can
   lock out others. This is acceptable for a single-admin control panel.
