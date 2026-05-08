@@ -15,8 +15,8 @@ Header always set Content-Security-Policy "default-src 'self'; script-src 'self'
 # RewriteCond %{HTTPS} off
 # RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
 
-# Block direct web access to config directory
-<DirectoryMatch "^.*/config/">
+# Block direct web access to config and data directories
+<DirectoryMatch "^.*(config|data)/">
     Require all denied
 </DirectoryMatch>
 

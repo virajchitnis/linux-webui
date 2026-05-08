@@ -6,38 +6,30 @@ if (is_authenticated()) {
     exit;
 }
 
-const MAX_ATTEMPTS    = 5;
-const LOCKOUT_SECONDS = 900; // 15 minutes
-
-$attempts    = isset($_SESSION['login_attempts'])    ? (int) $_SESSION['login_attempts']    : 0;
-$locked_until = isset($_SESSION['login_lockout_until']) ? (int) $_SESSION['login_lockout_until'] : 0;
-$locked       = $attempts >= MAX_ATTEMPTS && time() < $locked_until;
-
-$error = '';
+$locked = is_ip_locked_out();
+$error  = '';
 
 if ($locked) {
-    $mins  = (int) ceil(($locked_until - time()) / 60);
+    $mins  = (int) ceil(ip_lockout_remaining() / 60);
     $error = "Too many failed attempts. Try again in {$mins} minute(s).";
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $username = isset($_POST['username']) ? $_POST['username'] : '';
-    $password = isset($_POST['password']) ? $_POST['password'] : '';
+    $username = $_POST['username'] ?? '';
+    $password = $_POST['password'] ?? '';
 
     if (login($username, $password)) {
-        $_SESSION['login_attempts']    = 0;
-        unset($_SESSION['login_lockout_until']);
+        reset_ip_attempts();
         header('Location: index.php');
         exit;
     }
 
-    $attempts++;
-    $_SESSION['login_attempts'] = $attempts;
-    if ($attempts >= MAX_ATTEMPTS) {
-        $_SESSION['login_lockout_until'] = time() + LOCKOUT_SECONDS;
+    record_failed_attempt();
+
+    if (is_ip_locked_out()) {
         $mins  = (int) ceil(LOCKOUT_SECONDS / 60);
         $error = "Too many failed attempts. Try again in {$mins} minute(s).";
+        $locked = true;
     } else {
-        $remaining = MAX_ATTEMPTS - $attempts;
-        $error = "Invalid username or password. {$remaining} attempt(s) remaining.";
+        $error = 'Invalid username or password.';
     }
 }
 ?>
