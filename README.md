@@ -24,7 +24,14 @@ Installation via Git (Recommended)
 1. Install Apache
 2. Install PHP
 3. Clone the git repository into your web server directory (usually /var/www or its subdirectories) by running 'git clone https://github.com/virajchitnis/linux-webui.git'.
-4. Give sudo root access to Apache user by adding 'apache ALL=(ALL) NOPASSWD: ALL' to the /etc/sudoers file where 'apache' is the Apache user (apache on Gentoo, www-data on Debian, httpd on CentOS, etc).
+4. Install the sudoers drop-in file to grant the web server user only the specific commands linux-webui needs:
+   ```
+   sudo cp config/sudoers.example /etc/sudoers.d/linux-webui
+   sudo chmod 0440 /etc/sudoers.d/linux-webui
+   sudo visudo -c
+   ```
+   Edit `/etc/sudoers.d/linux-webui` first if your web server user is not `apache` (use `www-data` on Debian/Ubuntu) or if `service` lives at `/usr/sbin/service` rather than `/sbin/service` on your distro.
+   **Do not use `NOPASSWD: ALL`** — that grants unrestricted root access to the web server process.
 5. Future updates to the web application can be installed by simply clicking the 'Update' button in the about page of the project.
 
 Installation via tar.gz (Not recommended)
