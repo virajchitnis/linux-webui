@@ -1,3 +1,8 @@
+<?php
+require_once __DIR__ . '/common/auth.php';
+require_auth();
+$csrf = generate_csrf_token();
+?>
 <html>
 	<head>
 		<link rel="stylesheet" type="text/css" href="css/design.css">
@@ -24,8 +29,11 @@
         						$branch = $git_branch;
         					}
         			?>
-        					<p><?php echo exec("git describe"); ?> (<?php echo $branch; ?>)</p>
-        					<p><a href="shellscripts/gitupdate.php"><button>Update</button></a></p>
+        					<p><?php echo htmlspecialchars(exec("git describe")); ?> (<?php echo htmlspecialchars($branch); ?>)</p>
+        					<form method="post" action="shellscripts/gitupdate.php">
+        						<input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($csrf); ?>">
+        						<button type="submit">Update</button>
+        					</form>
         					<p>&nbsp;</p>
         			<?php
         				}

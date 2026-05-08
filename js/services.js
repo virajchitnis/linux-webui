@@ -1,9 +1,29 @@
+function postForm(action, fields) {
+	var form = document.createElement('form');
+	form.method = 'POST';
+	form.action = action;
+	Object.keys(fields).forEach(function(key) {
+		var input = document.createElement('input');
+		input.type = 'hidden';
+		input.name = key;
+		input.value = fields[key];
+		form.appendChild(input);
+	});
+	document.body.appendChild(form);
+	form.submit();
+}
+
+function serviceAction(service, operation) {
+	postForm('shellscripts/service_operation.php', {
+		service: service,
+		operation: operation,
+		csrf_token: CSRF_TOKEN
+	});
+}
+
 function confirmReboot () {
 	if (confirm('Are you sure you want to reboot the system?')) {
-		window.location.href = 'shellscripts/reboot.php?system=y';
-	}
-	else {
-		// Do nothing
+		postForm('shellscripts/reboot.php', { csrf_token: CSRF_TOKEN });
 	}
 }
 
