@@ -2,7 +2,7 @@ linux-webui (beta)
 ==================
 A simple web control panel for Linux servers.
 
-This project was originally developed and tested on Gentoo. Most Linux distros are similar enough that the control panel should work on any of them. If you get it running on a distro not listed below, please open an issue so the OS support list can be updated.
+This project was originally developed and tested on Gentoo. Other distros will be tested as and when I have time (I am a student). Most Linux distros are quite similar to each other, so a most of the control panel should be functional on any distro. If you manage to get it working on some other distro, please let me know so that I can update the OS support info.
 
 OS support
 ----------
@@ -24,7 +24,11 @@ Requirements
 Installation via Git (Recommended)
 -----------------------------------
 
-### 1. Clone the repository
+### 1. Install Apache and PHP
+
+Install Apache 2.4+ and PHP 7.0+ using your distro's package manager.
+
+### 2. Clone the repository
 
 Clone into your web server's document root (or a subdirectory of it):
 
@@ -33,7 +37,7 @@ git clone https://github.com/virajchitnis/linux-webui.git
 cd linux-webui
 ```
 
-### 2. Install the sudoers drop-in
+### 3. Install the sudoers drop-in
 
 linux-webui needs to run `service`, `pmap`, and `rc-update` as root. A
 ready-made drop-in file listing only those specific commands is provided —
@@ -60,7 +64,7 @@ Things to check in `config/sudoers.example` before installing:
 
 Verify the paths on your system with `which service` and `which pmap`.
 
-### 3. Set the admin password
+### 4. Set the admin password
 
 The application ships with a default password of `changeme`. **Change it
 before the server is reachable by anyone else.**
@@ -74,7 +78,7 @@ php -r "echo password_hash('your_password_here', PASSWORD_DEFAULT);"
 Open `config/credentials.php` and replace the value of `AUTH_PASSWORD_HASH`
 with the output. You can also change `AUTH_USERNAME` from `admin` if you prefer.
 
-### 4. Set permissions on the data directory
+### 5. Set permissions on the data directory
 
 The `data/` directory is used to store runtime files (login rate-limit
 counters, the update log). It must be writable by the web server user:
@@ -89,7 +93,7 @@ sudo chown www-data:www-data data/
 
 The directory is already protected from direct web access by `.htaccess`.
 
-### 5. Enable required Apache modules
+### 6. Enable required Apache modules
 
 ```bash
 # Debian / Ubuntu (using a2enmod)
@@ -101,7 +105,7 @@ sudo systemctl restart apache2
 #   LoadModule rewrite_module modules/mod_rewrite.so
 ```
 
-### 6. Set up HTTPS (recommended)
+### 7. Set up HTTPS (recommended)
 
 Running a server control panel over plain HTTP means your session cookie and
 all commands are visible on the network. Once you have a TLS certificate in
@@ -120,23 +124,27 @@ Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains
 > **Note:** Do not enable HSTS until HTTPS is fully working. A misconfigured
 > HSTS header can lock browsers out of the site entirely.
 
-### 7. Log in
+### 8. Log in
 
 Navigate to the site in your browser. You will be presented with a login page.
-Use the credentials set in step 3.
+Use the credentials set in step 4.
+
+Future updates to the web application can be installed by clicking the **Update** button on the About page.
 
 ---
 
 Installation via tar.gz (Not recommended)
 ------------------------------------------
 
-1. Download the tar.gz for the latest release into your web server directory:
+1. Install Apache 2.4+ and PHP 7.0+.
+2. Download the tar.gz for the latest release into your web server directory:
    ```bash
    wget https://github.com/virajchitnis/linux-webui/archive/v1.1.3.tar.gz
    ```
-2. Extract: `tar -zxvf v1.1.3.tar.gz`
-3. Delete the archive: `rm v1.1.3.tar.gz`
-4. Follow steps 2–6 from the Git installation above.
+   (Replace `v1.1.3` with the version you wish to download.)
+3. Extract: `tar -zxvf v1.1.3.tar.gz`
+4. Delete the archive: `rm v1.1.3.tar.gz`
+5. Follow steps 3–7 from the Git installation above.
 
 Future updates must be applied by downloading and extracting a newer tar.gz
 over the current directory. Using Git is strongly recommended as it allows
