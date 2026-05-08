@@ -3,7 +3,17 @@ Header always set X-Frame-Options "SAMEORIGIN"
 Header always set X-Content-Type-Options "nosniff"
 Header always set X-XSS-Protection "1; mode=block"
 Header always set Referrer-Policy "strict-origin-when-cross-origin"
-Header always set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'"
+Header always set Content-Security-Policy "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'"
+
+# HSTS: uncomment once HTTPS is configured on this server.
+# Sending HSTS over plain HTTP has no effect and can be ignored safely,
+# but only enable the redirect below when a valid TLS certificate is in place.
+# Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains"
+
+# HTTP -> HTTPS redirect: uncomment when TLS is available.
+# RewriteEngine On
+# RewriteCond %{HTTPS} off
+# RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
 
 # Block direct web access to config directory
 <DirectoryMatch "^.*/config/">

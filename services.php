@@ -7,6 +7,7 @@ $csrf = generate_csrf_token();
 	<head>
 		<link rel="stylesheet" type="text/css" href="css/design.css">
 		<link rel="stylesheet" type="text/css" href="css/services.css">
+		<meta name="csrf-token" content="<?php echo htmlspecialchars(generate_csrf_token(), ENT_QUOTES); ?>">
 		<script src="js/services.js"></script>
 		<title>linux-webui - Linux Server Control Panel</title>
 	</head>
@@ -16,7 +17,6 @@ $csrf = generate_csrf_token();
         	<div class="body">
         		<div>&nbsp;</div>
         		<div class="body_content">
-        			<script>var CSRF_TOKEN = '<?php echo htmlspecialchars($csrf, ENT_QUOTES); ?>';</script>
         			<table class="body_table">
         				<tr>
         					<th class="body_table_data">Service</th>

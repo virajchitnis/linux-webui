@@ -1,3 +1,8 @@
+function getCsrfToken() {
+	var meta = document.querySelector('meta[name="csrf-token"]');
+	return meta ? meta.getAttribute('content') : '';
+}
+
 function postForm(action, fields) {
 	var form = document.createElement('form');
 	form.method = 'POST';
@@ -17,13 +22,13 @@ function serviceAction(service, operation) {
 	postForm('shellscripts/service_operation.php', {
 		service: service,
 		operation: operation,
-		csrf_token: CSRF_TOKEN
+		csrf_token: getCsrfToken()
 	});
 }
 
 function confirmReboot () {
 	if (confirm('Are you sure you want to reboot the system?')) {
-		postForm('shellscripts/reboot.php', { csrf_token: CSRF_TOKEN });
+		postForm('shellscripts/reboot.php', { csrf_token: getCsrfToken() });
 	}
 }
 
