@@ -1,2 +1,34 @@
-data/*.json
-data/*.log
+# Go build output
+/linux-admin
+/linux-admin.exe
+
+# Frontend build output
+web/dist/
+ui/dist/
+web/node_modules/
+
+# SQLite databases
+*.db
+*.db-shm
+*.db-wal
+
+# TLS certificates (generated at runtime)
+*.pem
+*.key
+
+# Development
+.env
+.env.local
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# GoReleaser dist
+dist/

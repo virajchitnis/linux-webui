@@ -1,0 +1,25 @@
+[Unit]
+Description=linux-admin server administration panel
+After=network.target dbus.service
+Wants=dbus.service
+
+[Service]
+Type=simple
+User=linux-admin
+Group=linux-admin
+ExecStart=/usr/local/bin/linux-admin --config /etc/linux-admin/config.toml
+Restart=on-failure
+RestartSec=5
+
+# Security hardening
+NoNewPrivileges=yes
+ProtectSystem=strict
+ReadWritePaths=/etc/linux-admin
+PrivateTmp=yes
+ProtectHome=yes
+RestrictNamespaces=yes
+RestrictRealtime=yes
+RestrictSUIDSGID=yes
+
+[Install]
+WantedBy=multi-user.target
