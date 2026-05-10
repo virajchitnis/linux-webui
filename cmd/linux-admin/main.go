@@ -107,6 +107,10 @@ func main() {
 	if _, e := os.Stat("/usr/bin/journalctl"); e == nil {
 		journalEnabled = true
 	}
+	ufwEnabled := false
+	if _, e := os.Stat("/usr/sbin/ufw"); e == nil {
+		ufwEnabled = true
+	}
 
 	router := api.NewRouter(api.RouterOptions{
 		DB:              db,
@@ -121,6 +125,7 @@ func main() {
 		PrometheusOn:    cfg.Monitoring.Prometheus,
 		AptEnabled:      aptEnabled,
 		JournalEnabled:  journalEnabled,
+		UFWEnabled:      ufwEnabled,
 		FrontendHandler: frontendHandler(),
 	})
 

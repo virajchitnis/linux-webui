@@ -19,16 +19,17 @@ type RouterOptions struct {
 	DB              *sql.DB
 	Distro          *distro.Distro
 	Collector       *metrics.Collector
-	DBus            *dbuspkg.Client     // may be nil if D-Bus unavailable
-	TerminalManager *terminal.Manager   // may be nil if bash/pty unavailable
+	DBus            *dbuspkg.Client   // nil if D-Bus unavailable
+	TerminalManager *terminal.Manager // nil if bash/pty unavailable
 	Version         string
 	SecureCookie    bool
 	AuthTimeout     int
 	BcryptCost      int
 	PrometheusOn    bool
-	AptEnabled      bool // true on Debian-family distros with apt in PATH
-	JournalEnabled  bool // true when journalctl is in PATH
-	FrontendHandler http.Handler // nil in dev mode
+	AptEnabled      bool // Debian-family distros with apt in PATH
+	JournalEnabled  bool // journalctl in PATH
+	UFWEnabled      bool // ufw in PATH
+	FrontendHandler http.Handler
 }
 
 func NewRouter(opts RouterOptions) http.Handler {
@@ -41,7 +42,7 @@ func NewRouter(opts RouterOptions) http.Handler {
 	r.Use(rl.Limit)
 	r.Use(middleware.SecurityHeaders)
 
-	// Public endpoints
+	// ── Public ────────────────────────────────────────────────────────────────
 	r.Get("/health", handlers.Health)
 	r.Get("/api/setup/status", (&handlers.SetupHandler{DB: opts.DB, BcryptCost: opts.BcryptCost}).Status)
 	r.Post("/api/setup/complete", (&handlers.SetupHandler{DB: opts.DB, BcryptCost: opts.BcryptCost}).Complete)
@@ -52,8 +53,10 @@ func NewRouter(opts RouterOptions) http.Handler {
 		SecureCookie:   opts.SecureCookie,
 	}).Login)
 
-	// Authenticated routes
+	// ── Authenticated ─────────────────────────────────────────────────────────
 	authMW := middleware.RequireAuth(middleware.Options{DB: opts.DB, TimeoutMinutes: opts.AuthTimeout})
+	adminMW := middleware.RequireAdmin
+
 	r.Group(func(r chi.Router) {
 		r.Use(authMW)
 		r.Use(middleware.RequireCSRF)
@@ -74,19 +77,19 @@ func NewRouter(opts RouterOptions) http.Handler {
 		if opts.DBus != nil {
 			svc := &handlers.ServicesHandler{DBus: opts.DBus, DB: opts.DB}
 			r.Get("/api/services", svc.List)
-			r.Post("/api/services/{name}/start", svc.Start)
-			r.Post("/api/services/{name}/stop", svc.Stop)
-			r.Post("/api/services/{name}/restart", svc.Restart)
-			r.Post("/api/services/{name}/enable", svc.Enable)
-			r.Post("/api/services/{name}/disable", svc.Disable)
+			r.With(adminMW).Post("/api/services/{name}/start", svc.Start)
+			r.With(adminMW).Post("/api/services/{name}/stop", svc.Stop)
+			r.With(adminMW).Post("/api/services/{name}/restart", svc.Restart)
+			r.With(adminMW).Post("/api/services/{name}/enable", svc.Enable)
+			r.With(adminMW).Post("/api/services/{name}/disable", svc.Disable)
 		}
 
-		// APT package manager (Debian-family only)
+		// APT package manager
 		if opts.AptEnabled {
 			apt := &handlers.AptHandler{DB: opts.DB}
 			r.Get("/api/packages/upgradable", apt.Upgradable)
 			r.Get("/api/packages/status", apt.Status)
-			r.Get("/ws/apt", apt.Stream)
+			r.With(adminMW).Get("/ws/apt", apt.Stream)
 		}
 
 		// Journal log viewer
@@ -97,12 +100,47 @@ func NewRouter(opts RouterOptions) http.Handler {
 		// Web terminal (PTY)
 		if opts.TerminalManager != nil {
 			th := &handlers.TerminalHandler{Manager: opts.TerminalManager, DB: opts.DB}
-			r.Post("/api/terminal/new", th.New)
-			r.Get("/ws/terminal/{id}", th.Connect)
+			r.With(adminMW).Post("/api/terminal/new", th.New)
+			r.With(adminMW).Get("/ws/terminal/{id}", th.Connect)
 		}
+
+		// Processes
+		ph := &handlers.ProcessHandler{}
+		r.Get("/api/processes", ph.List)
+		r.With(adminMW).Post("/api/processes/{pid}/kill", ph.Kill)
+		r.With(adminMW).Post("/api/processes/{pid}/renice", ph.Renice)
+
+		// User management (admin only)
+		uh := &handlers.UsersHandler{DB: opts.DB}
+		r.With(adminMW).Get("/api/users", uh.ListUsers)
+		r.With(adminMW).Get("/api/groups", uh.ListGroups)
+		r.With(adminMW).Post("/api/users", uh.CreateUser)
+		r.With(adminMW).Delete("/api/users/{username}", uh.DeleteUser)
+		r.With(adminMW).Post("/api/users/{username}/password", uh.SetPassword)
+
+		// Firewall (UFW)
+		if opts.UFWEnabled {
+			fh := &handlers.FirewallHandler{DB: opts.DB}
+			r.Get("/api/firewall/status", fh.Status)
+			r.With(adminMW).Post("/api/firewall/rules", fh.AddRule)
+			r.With(adminMW).Delete("/api/firewall/rules/{num}", fh.DeleteRule)
+			r.With(adminMW).Post("/api/firewall/enable", fh.Enable)
+			r.With(adminMW).Post("/api/firewall/disable", fh.Disable)
+		}
+
+		// Account settings (own user)
+		acc := &handlers.AccountHandler{DB: opts.DB, BcryptCost: opts.BcryptCost}
+		r.Post("/api/account/password", acc.ChangeSelfPassword)
+		r.Get("/api/account/sessions", acc.ListSelfSessions)
+		r.Delete("/api/account/sessions/{id}", acc.RevokeSelfSession)
+
+		// Admin session management
+		adm := &handlers.AdminSessionsHandler{DB: opts.DB}
+		r.With(adminMW).Get("/api/admin/sessions", adm.List)
+		r.With(adminMW).Delete("/api/admin/sessions/{id}", adm.Revoke)
 	})
 
-	// Serve embedded frontend for all unmatched routes (SPA fallback)
+	// Serve embedded frontend (SPA fallback)
 	if opts.FrontendHandler != nil {
 		r.Handle("/*", spaHandler(opts.FrontendHandler))
 	}
@@ -117,7 +155,6 @@ func NewRouter(opts RouterOptions) http.Handler {
 	return r
 }
 
-// spaHandler serves static files and falls back to index.html for SPA routing.
 func spaHandler(static http.Handler) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		static.ServeHTTP(w, r)

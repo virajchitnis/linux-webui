@@ -2,7 +2,7 @@ import { NavLink } from 'react-router-dom'
 import {
   LayoutDashboard, Server, Terminal, ScrollText, Package,
   Activity, Shield, Users, FolderOpen, Clock, Bot,
-  Network, Container, Wifi, GitBranch, Info, LogOut,
+  Network, Container, Wifi, GitBranch, Info, LogOut, Settings,
 } from 'lucide-react'
 import { cn } from '@/lib/cn'
 import type { Capabilities } from '@/hooks/useCapabilities'
@@ -57,10 +57,18 @@ export default function Sidebar({ caps, role, username, onLogout }: Props) {
         ))}
       </nav>
 
-      <div className="border-t border-gray-800 p-3">
-        <div className="text-xs text-gray-500 mb-2 px-2">
-          {username} · {role}
-        </div>
+      <div className="border-t border-gray-800 p-3 space-y-1">
+        <div className="text-xs text-gray-500 mb-1 px-2">{username} · {role}</div>
+        <NavLink
+          to="/account"
+          className={({ isActive }) =>
+            cn('flex items-center gap-2 px-3 py-2 text-sm transition-colors rounded-lg',
+              isActive ? 'text-white bg-gray-800' : 'text-gray-400 hover:text-white hover:bg-gray-800/50')
+          }
+        >
+          <Settings size={16} />
+          Account settings
+        </NavLink>
         <button
           onClick={onLogout}
           className="flex items-center gap-2 w-full px-3 py-2 text-sm text-gray-400 hover:text-white hover:bg-gray-800 rounded-lg transition-colors"

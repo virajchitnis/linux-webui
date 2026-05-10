@@ -21,6 +21,7 @@ import WireGuard from '@/pages/WireGuard'
 import Tailscale from '@/pages/Tailscale'
 import AI from '@/pages/AI'
 import About from '@/pages/About'
+import Account from '@/pages/Account'
 
 function SetupGuard({ children }: { children: React.ReactNode }) {
   const navigate = useNavigate()
@@ -63,6 +64,7 @@ export default function App() {
           <Route path="tailscale" element={<Tailscale />} />
           <Route path="ai" element={<AI />} />
           <Route path="about" element={<About />} />
+          <Route path="account" element={<Account />} />
         </Route>
       </Routes>
     </SetupGuard>
