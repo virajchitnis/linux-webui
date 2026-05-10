@@ -1,18 +1,23 @@
 package handlers
 
 import (
+	"database/sql"
 	"encoding/json"
 	"net/http"
 	"os"
+	"os/exec"
 	"runtime"
 	"strings"
 
+	"github.com/virajchitnis/linux-webui/internal/api/middleware"
+	"github.com/virajchitnis/linux-webui/internal/auth"
 	"github.com/virajchitnis/linux-webui/internal/metrics"
 )
 
 type SystemHandler struct {
 	Collector *metrics.Collector
 	Version   string
+	DB        *sql.DB
 }
 
 func (h *SystemHandler) Info(w http.ResponseWriter, r *http.Request) {
@@ -51,6 +56,20 @@ func (h *SystemHandler) Metrics(w http.ResponseWriter, r *http.Request) {
 func Health(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(map[string]string{"status": "ok"})
+}
+
+// Reboot triggers an immediate system reboot via sudo /sbin/reboot.
+func (h *SystemHandler) Reboot(w http.ResponseWriter, r *http.Request) {
+	session := middleware.SessionFromContext(r.Context())
+	if session != nil {
+		auth.LogAction(h.DB, session.UserID, session.Username, "reboot", "", middleware.ClientIP(r))
+	}
+	cmd := exec.Command("/usr/bin/sudo", "/sbin/reboot")
+	if err := cmd.Run(); err != nil {
+		http.Error(w, "reboot failed: "+err.Error(), http.StatusInternalServerError)
+		return
+	}
+	w.WriteHeader(http.StatusNoContent)
 }
 
 func readKernelVersion() string {

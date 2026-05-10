@@ -27,6 +27,7 @@ import (
 	dbuspkg "github.com/virajchitnis/linux-webui/internal/dbus"
 	"github.com/virajchitnis/linux-webui/internal/distro"
 	"github.com/virajchitnis/linux-webui/internal/metrics"
+	"github.com/virajchitnis/linux-webui/internal/terminal"
 )
 
 // version is set at build time via -ldflags.
@@ -84,16 +85,42 @@ func main() {
 	collector := metrics.NewCollector()
 	collector.Start()
 
+	// Terminal (PTY) manager — only if terminal is enabled in config and bash is available.
+	var termMgr *terminal.Manager
+	if cfg.Features.TerminalEnabled {
+		if _, err := os.Stat("/bin/bash"); err == nil {
+			idleTimeout := time.Duration(cfg.Auth.TerminalReconnectSecs) * time.Second
+			if idleTimeout <= 0 {
+				idleTimeout = 30 * time.Second
+			}
+			maxSess := cfg.Features.MaxTerminalSessions
+			if maxSess <= 0 {
+				maxSess = 3
+			}
+			termMgr = terminal.NewManager(maxSess, idleTimeout)
+		}
+	}
+
+	// Feature availability detection.
+	aptEnabled := d.Family == distro.FamilyDebian
+	journalEnabled := false
+	if _, e := os.Stat("/usr/bin/journalctl"); e == nil {
+		journalEnabled = true
+	}
+
 	router := api.NewRouter(api.RouterOptions{
 		DB:              db,
 		Distro:          d,
 		Collector:       collector,
 		DBus:            dbusClient,
+		TerminalManager: termMgr,
 		Version:         version,
 		SecureCookie:    true,
 		AuthTimeout:     cfg.Auth.SessionTimeoutMinutes,
 		BcryptCost:      cfg.Auth.BcryptCost,
 		PrometheusOn:    cfg.Monitoring.Prometheus,
+		AptEnabled:      aptEnabled,
+		JournalEnabled:  journalEnabled,
 		FrontendHandler: frontendHandler(),
 	})
 

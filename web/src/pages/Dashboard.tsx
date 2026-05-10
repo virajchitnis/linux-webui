@@ -1,7 +1,9 @@
+import { useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { api } from '@/lib/api'
 import { useMetrics } from '@/hooks/useMetrics'
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts'
+import { Power } from 'lucide-react'
 
 interface SystemInfo {
   hostname: string
@@ -29,7 +31,22 @@ function fmtBytes(kb: number): string {
   return `${(kb / 1024).toFixed(0)} MB`
 }
 
+function useReboot() {
+  const [rebooting, setRebooting] = useState(false)
+  const trigger = async () => {
+    if (!window.confirm('Reboot the system now? All active sessions will be terminated.')) return
+    setRebooting(true)
+    try {
+      await api.post('/api/system/reboot', {})
+    } catch {
+      // Expected — server goes down immediately
+    }
+  }
+  return { trigger, rebooting }
+}
+
 export default function Dashboard() {
+  const { trigger: reboot, rebooting } = useReboot()
   const { data: info } = useQuery<SystemInfo>({
     queryKey: ['system-info'],
     queryFn: () => api.get('/api/system/info'),
@@ -78,6 +95,19 @@ export default function Dashboard() {
           </dl>
         </div>
       )}
+
+      {/* Quick actions */}
+      <div className="bg-gray-900 rounded-xl border border-gray-800 p-4">
+        <h2 className="text-sm font-semibold text-gray-400 mb-3">Quick Actions</h2>
+        <button
+          onClick={reboot}
+          disabled={rebooting}
+          className="flex items-center gap-2 px-3 py-2 bg-red-900/30 hover:bg-red-900/50 border border-red-800/50 text-red-400 hover:text-red-300 text-sm rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+        >
+          <Power className="h-4 w-4" />
+          {rebooting ? 'Rebooting…' : 'Reboot system'}
+        </button>
+      </div>
     </div>
   )
 }

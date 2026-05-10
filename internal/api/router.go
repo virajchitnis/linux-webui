@@ -12,18 +12,22 @@ import (
 	dbuspkg "github.com/virajchitnis/linux-webui/internal/dbus"
 	"github.com/virajchitnis/linux-webui/internal/distro"
 	"github.com/virajchitnis/linux-webui/internal/metrics"
+	"github.com/virajchitnis/linux-webui/internal/terminal"
 )
 
 type RouterOptions struct {
 	DB              *sql.DB
 	Distro          *distro.Distro
 	Collector       *metrics.Collector
-	DBus            *dbuspkg.Client // may be nil if D-Bus unavailable
+	DBus            *dbuspkg.Client     // may be nil if D-Bus unavailable
+	TerminalManager *terminal.Manager   // may be nil if bash/pty unavailable
 	Version         string
 	SecureCookie    bool
 	AuthTimeout     int
 	BcryptCost      int
 	PrometheusOn    bool
+	AptEnabled      bool // true on Debian-family distros with apt in PATH
+	JournalEnabled  bool // true when journalctl is in PATH
 	FrontendHandler http.Handler // nil in dev mode
 }
 
@@ -57,9 +61,10 @@ func NewRouter(opts RouterOptions) http.Handler {
 		r.Post("/api/auth/logout", (&handlers.AuthHandler{DB: opts.DB}).Logout)
 		r.Get("/api/auth/me", (&handlers.AuthHandler{DB: opts.DB}).Me)
 
-		sysHandler := &handlers.SystemHandler{Collector: opts.Collector, Version: opts.Version}
+		sysHandler := &handlers.SystemHandler{Collector: opts.Collector, Version: opts.Version, DB: opts.DB}
 		r.Get("/api/system/info", sysHandler.Info)
 		r.Get("/api/system/metrics", sysHandler.Metrics)
+		r.Post("/api/system/reboot", sysHandler.Reboot)
 		r.Get("/api/capabilities", caps.Handler())
 
 		// WebSocket: metrics stream
@@ -74,6 +79,26 @@ func NewRouter(opts RouterOptions) http.Handler {
 			r.Post("/api/services/{name}/restart", svc.Restart)
 			r.Post("/api/services/{name}/enable", svc.Enable)
 			r.Post("/api/services/{name}/disable", svc.Disable)
+		}
+
+		// APT package manager (Debian-family only)
+		if opts.AptEnabled {
+			apt := &handlers.AptHandler{DB: opts.DB}
+			r.Get("/api/packages/upgradable", apt.Upgradable)
+			r.Get("/api/packages/status", apt.Status)
+			r.Get("/ws/apt", apt.Stream)
+		}
+
+		// Journal log viewer
+		if opts.JournalEnabled {
+			r.Get("/ws/logs", (&handlers.JournalWSHandler{}).ServeHTTP)
+		}
+
+		// Web terminal (PTY)
+		if opts.TerminalManager != nil {
+			th := &handlers.TerminalHandler{Manager: opts.TerminalManager, DB: opts.DB}
+			r.Post("/api/terminal/new", th.New)
+			r.Get("/ws/terminal/{id}", th.Connect)
 		}
 	})
 
@@ -95,7 +120,6 @@ func NewRouter(opts RouterOptions) http.Handler {
 // spaHandler serves static files and falls back to index.html for SPA routing.
 func spaHandler(static http.Handler) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		// Let the file server handle actual assets; for everything else serve index.html
 		static.ServeHTTP(w, r)
 	}
 }
@@ -108,7 +132,6 @@ func prometheusHandler(c *metrics.Collector) http.HandlerFunc {
 			return
 		}
 		w.Header().Set("Content-Type", "text/plain; version=0.0.4")
-		// Basic metrics in Prometheus text format
 		fmt.Fprintf(w, "# HELP linux_admin_cpu_percent CPU usage percent\n")
 		fmt.Fprintf(w, "linux_admin_cpu_percent %.2f\n", snap.CPUPercent)
 		fmt.Fprintf(w, "linux_admin_mem_used_kb %d\n", snap.MemUsed)
