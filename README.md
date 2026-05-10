@@ -1,4 +1,4 @@
-# linux-admin
+# linux-webui
 
 A modern, secure web-based administration panel for Linux servers. Built with Go and React, it replaces the traditional SSH terminal workflow with a clean browser interface for daily server management tasks.
 
@@ -69,12 +69,12 @@ Then visit `https://your-server:8443` and complete the first-run wizard.
 1. Download the pre-built binary from [Releases](https://github.com/virajchitnis/linux-webui/releases).
 2. Run the installer:
    ```bash
-   sudo ./linux-admin --install
+   sudo ./linux-webui --install
    ```
-   This creates the `linux-admin` system user, polkit rule, sudoers entries, and a systemd service unit.
+   This creates the `linux-webui` system user, polkit rule, sudoers entries, and a systemd service unit.
 3. Start the service:
    ```bash
-   sudo systemctl enable --now linux-admin
+   sudo systemctl enable --now linux-webui
    ```
 4. Navigate to `https://your-server:8443` and complete the setup wizard (set your admin password).
 
@@ -84,20 +84,20 @@ Then visit `https://your-server:8443` and complete the first-run wizard.
 git clone https://github.com/virajchitnis/linux-webui.git
 cd linux-webui
 make build
-# Produces: ./linux-admin
+# Produces: ./linux-webui
 ```
 
 Prerequisites: Go 1.22+, Node.js 20+, npm.
 
 ## Configuration
 
-The config file lives at `/etc/linux-admin/config.toml` (created by the installer). All settings have sensible defaults. Example:
+The config file lives at `/etc/linux-webui/config.toml` (created by the installer). All settings have sensible defaults. Example:
 
 ```toml
 [server]
 listen     = "0.0.0.0:8443"
-tls_cert   = "/etc/linux-admin/tls/cert.pem"
-tls_key    = "/etc/linux-admin/tls/key.pem"
+tls_cert   = "/etc/linux-webui/tls/cert.pem"
+tls_key    = "/etc/linux-webui/tls/key.pem"
 http_listen = "0.0.0.0:8080"  # redirects to HTTPS
 
 [auth]
@@ -141,11 +141,11 @@ The panel auto-detects Ollama on startup. Set `ollama.enabled = true` in config 
 
 ### Docker
 
-Add the `linux-admin` user to the `docker` group:
+Add the `linux-webui` user to the `docker` group:
 
 ```bash
-sudo usermod -aG docker linux-admin
-sudo systemctl restart linux-admin
+sudo usermod -aG docker linux-webui
+sudo systemctl restart linux-webui
 ```
 
 > **Security note**: Docker group membership is equivalent to root access. Any process in the group can escape to root via a bind mount. Consider disabling the web terminal when Docker is enabled, or restricting access to admin users only.
@@ -167,7 +167,7 @@ http_listen = "0.0.0.0:80"   # required for HTTP-01 challenge
 acme_domain = "myserver.example.com"
 ```
 
-The binary handles the ACME HTTP-01 challenge itself on port 80. Certificates are cached in `/etc/linux-admin/tls/` and renewed automatically.
+The binary handles the ACME HTTP-01 challenge itself on port 80. Certificates are cached in `/etc/linux-webui/tls/` and renewed automatically.
 
 ### Prometheus
 
@@ -186,16 +186,16 @@ Users are stored in SQLite (not the system `/etc/passwd`). To add a user via the
 
 ```bash
 # Replace the binary
-sudo systemctl stop linux-admin
-sudo cp linux-admin /usr/local/bin/linux-admin
-sudo systemctl start linux-admin
+sudo systemctl stop linux-webui
+sudo cp linux-webui /usr/local/bin/linux-webui
+sudo systemctl start linux-webui
 ```
 
 Database migrations run automatically on startup — downtime is minimal.
 
 ## Security Notes
 
-- Runs as the `linux-admin` user (non-root) with a targeted polkit rule for systemd management
+- Runs as the `linux-webui` user (non-root) with a targeted polkit rule for systemd management
 - No `sh -c` anywhere — all subprocess calls use `[]string` args to prevent command injection
 - TLS 1.2+ with strong cipher suites; HTTP auto-redirects to HTTPS
 - CSRF protection on all state-changing requests
@@ -207,10 +207,10 @@ Database migrations run automatically on startup — downtime is minimal.
 ## Uninstall
 
 ```bash
-sudo ./linux-admin --uninstall
+sudo ./linux-webui --uninstall
 ```
 
-This removes the `linux-admin` user, polkit rule, sudoers entry, and systemd unit. The data directory `/etc/linux-admin/` is left intact for manual review.
+This removes the `linux-webui` user, polkit rule, sudoers entry, and systemd unit. The data directory `/etc/linux-webui/` is left intact for manual review.
 
 ## Contributing
 

@@ -1,25 +1,25 @@
-# CLAUDE.md — linux-admin Codebase Guide
+# CLAUDE.md — linux-webui Codebase Guide
 
 ## Project Overview
 
-linux-admin is a modern Go + React web panel for Linux server administration targeting Ubuntu 24.04/26.04 with systemd. It replaces a PHP/Apache Gentoo-specific panel. The backend is a single self-contained Go binary that embeds the React frontend via `go:embed`. It communicates with systemd via D-Bus (no sudo for service management), reads metrics directly from `/proc`, and exposes both a REST API and WebSocket channels for real-time data.
+linux-webui is a modern Go + React web panel for Linux server administration targeting Ubuntu 24.04/26.04 with systemd. It replaces a PHP/Apache Gentoo-specific panel. The backend is a single self-contained Go binary that embeds the React frontend via `go:embed`. It communicates with systemd via D-Bus (no sudo for service management), reads metrics directly from `/proc`, and exposes both a REST API and WebSocket channels for real-time data.
 
 ## Build & Run
 
 ```bash
-make build          # vite build → ui/dist + go build -tags production → ./linux-admin
-make dev            # vite dev server (:5173) + go run ./cmd/linux-admin (LINUX_ADMIN_DEV=1)
+make build          # vite build → ui/dist + go build -tags production → ./linux-webui
+make dev            # vite dev server (:5173) + go run ./cmd/linux-webui (LINUX_WEBUI_DEV=1)
 make test           # go test ./... + go vet ./...
 make lint           # golangci-lint run
 ```
 
-The `LINUX_ADMIN_DEV=1` env var makes Vite proxy `/api/*` and `/ws/*` to the Go server at `:8443`. The `-tags production` build tag compiles out the dev proxy code via `//go:build !production`.
+The `LINUX_WEBUI_DEV=1` env var makes Vite proxy `/api/*` and `/ws/*` to the Go server at `:8443`. The `-tags production` build tag compiles out the dev proxy code via `//go:build !production`.
 
 ## Key Design Decisions
 
 **No `sh -c` ever.** Every `os/exec` call uses `[]string` args. Never interpolate user input into a string that becomes a shell command. See `internal/firewall/ufw.go` and `internal/users/users.go` for examples of how to construct commands with validated components.
 
-**D-Bus for systemd (not sudo).** The polkit rule at `/etc/polkit-1/rules.d/50-linux-admin.rules` grants `linux-admin` user `org.freedesktop.systemd1.manage-units` without password. `internal/dbus/` wraps `godbus/dbus/v5`. This means no shell process is spawned to start/stop services.
+**D-Bus for systemd (not sudo).** The polkit rule at `/etc/polkit-1/rules.d/50-linux-webui.rules` grants `linux-webui` user `org.freedesktop.systemd1.manage-units` without password. `internal/dbus/` wraps `godbus/dbus/v5`. This means no shell process is spawned to start/stop services.
 
 **SQLite for all transient state.** Sessions, audit log, brute-force counters, TOTP recovery codes — all in `internal/auth/` using `modernc.org/sqlite` (pure Go, no CGO). WAL mode, single writer (`SetMaxOpenConns(1)`).
 
@@ -33,7 +33,7 @@ The `LINUX_ADMIN_DEV=1` env var makes Vite proxy `/api/*` and `/ws/*` to the Go 
 
 | Package | Description |
 |---|---|
-| `cmd/linux-admin` | Entry point: config loading, feature detection, server startup, graceful shutdown |
+| `cmd/linux-webui` | Entry point: config loading, feature detection, server startup, graceful shutdown |
 | `internal/api` | chi router (`router.go`), `RouterOptions` struct |
 | `internal/api/handlers` | One file per route group (auth, services, apt, journal, terminal, process, users, firewall, account, totp, files, cron, netif, sensors, ai, auditlog, capabilities) |
 | `internal/api/middleware` | Auth session middleware, CSRF validation, rate limiter, security headers, ClientIP |
@@ -70,11 +70,11 @@ The `LINUX_ADMIN_DEV=1` env var makes Vite proxy `/api/*` and `/ws/*` to the Go 
 
 ## Auth & RBAC
 
-Sessions are 256-bit random hex IDs in the SQLite `sessions` table. `middleware.RequireAuth` validates the `linux_admin_session` cookie on every request and stores the `*auth.Session` in the request context. `middleware.SessionFromContext(ctx)` retrieves it.
+Sessions are 256-bit random hex IDs in the SQLite `sessions` table. `middleware.RequireAuth` validates the `linux_webui_session` cookie on every request and stores the `*auth.Session` in the request context. `middleware.SessionFromContext(ctx)` retrieves it.
 
 Roles: `admin` (full access) and `readonly` (GET endpoints only). `middleware.RequireAdmin` returns 403 if the session role is not `admin`. Wrap mutation routes with `r.With(adminMW)`.
 
-CSRF: every state-changing request (POST/PUT/DELETE) must include the `X-CSRF-Token` header matching the `linux_admin_csrf` cookie. Validated in `middleware.RequireCSRF`. The cookie is set on login and is readable by JS (not HttpOnly).
+CSRF: every state-changing request (POST/PUT/DELETE) must include the `X-CSRF-Token` header matching the `linux_webui_csrf` cookie. Validated in `middleware.RequireCSRF`. The cookie is set on login and is readable by JS (not HttpOnly).
 
 TOTP: if `users.totp_secret` is non-empty, the login handler requires a `totp_code` field. Recovery codes are bcrypt-hashed in `totp_recovery` and consumed one-at-a-time. Enrollment is a two-step HTTP exchange: `POST /api/account/totp/enroll` (get secret+QR URL) → `POST /api/account/totp/confirm` (verify code → save secret + generate recovery codes).
 

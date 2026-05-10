@@ -57,8 +57,8 @@ func Defaults() *Config {
 	return &Config{
 		Server: ServerConfig{
 			Listen:     "0.0.0.0:8443",
-			TLSCert:    "/etc/linux-admin/tls/cert.pem",
-			TLSKey:     "/etc/linux-admin/tls/key.pem",
+			TLSCert:    "/etc/linux-webui/tls/cert.pem",
+			TLSKey:     "/etc/linux-webui/tls/key.pem",
 			HTTPListen: "0.0.0.0:8080",
 		},
 		Auth: AuthConfig{

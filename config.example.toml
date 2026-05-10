@@ -1,10 +1,10 @@
-# linux-admin configuration — copy to /etc/linux-admin/config.toml
+# linux-webui configuration — copy to /etc/linux-webui/config.toml
 
 [server]
 listen      = "0.0.0.0:8443"       # HTTPS listen address
 http_listen = "0.0.0.0:8080"       # HTTP→HTTPS redirect listener
-tls_cert    = "/etc/linux-admin/tls/cert.pem"
-tls_key     = "/etc/linux-admin/tls/key.pem"
+tls_cert    = "/etc/linux-webui/tls/cert.pem"
+tls_key     = "/etc/linux-webui/tls/key.pem"
 # acme_domain = "myserver.example.com"  # Uncomment to use Let's Encrypt
 
 [auth]

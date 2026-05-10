@@ -1,7 +1,7 @@
 // Typed fetch wrapper — always sends X-CSRF-Token from the csrf cookie.
 
 function getCsrfToken(): string {
-  const match = document.cookie.match(/linux_admin_csrf=([^;]+)/)
+  const match = document.cookie.match(/linux_webui_csrf=([^;]+)/)
   return match ? match[1] : ''
 }
 

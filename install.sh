@@ -1,18 +1,18 @@
 #!/usr/bin/env bash
-# linux-admin installer
+# linux-webui installer
 # Usage: sudo bash install.sh
 #        sudo bash install.sh --uninstall
 
 set -euo pipefail
 
-BINARY_NAME="linux-admin"
+BINARY_NAME="linux-webui"
 INSTALL_DIR="/usr/local/bin"
-CONFIG_DIR="/etc/linux-admin"
+CONFIG_DIR="/etc/linux-webui"
 TLS_DIR="$CONFIG_DIR/tls"
-SYSTEM_USER="linux-admin"
-SERVICE_NAME="linux-admin"
-SUDOERS_FILE="/etc/sudoers.d/linux-admin"
-POLKIT_RULE="/etc/polkit-1/rules.d/50-linux-admin.rules"
+SYSTEM_USER="linux-webui"
+SERVICE_NAME="linux-webui"
+SUDOERS_FILE="/etc/sudoers.d/linux-webui"
+POLKIT_RULE="/etc/polkit-1/rules.d/50-linux-webui.rules"
 
 RED='\033[0;31m'; GREEN='\033[0;32m'; YELLOW='\033[1;33m'; NC='\033[0m'
 info() { echo -e "${GREEN}[info]${NC} $*"; }
@@ -22,7 +22,7 @@ die()  { echo -e "${RED}[error]${NC} $*" >&2; exit 1; }
 [[ $EUID -ne 0 ]] && die "Must be run as root"
 
 if [[ "${1:-}" == "--uninstall" ]]; then
-    info "Uninstalling linux-admin…"
+    info "Uninstalling linux-webui…"
     systemctl stop "$SERVICE_NAME" 2>/dev/null || true
     systemctl disable "$SERVICE_NAME" 2>/dev/null || true
     rm -f "/etc/systemd/system/$SERVICE_NAME.service"
@@ -65,8 +65,8 @@ if [[ ! -f "$CONFIG_FILE" ]]; then
 [server]
 listen      = "0.0.0.0:8443"
 http_listen = "0.0.0.0:8080"
-tls_cert    = "/etc/linux-admin/tls/cert.pem"
-tls_key     = "/etc/linux-admin/tls/key.pem"
+tls_cert    = "/etc/linux-webui/tls/cert.pem"
+tls_key     = "/etc/linux-webui/tls/key.pem"
 
 [auth]
 session_timeout_minutes = 30
@@ -100,16 +100,16 @@ fi
 # ── 5. sudoers ────────────────────────────────────────────────────────────────
 info "Installing sudoers rules"
 cat > "$SUDOERS_FILE" <<EOF
-# linux-admin sudoers — managed by install.sh
-linux-admin ALL=(root) NOPASSWD: /sbin/reboot
-linux-admin ALL=(root) NOPASSWD: /usr/bin/apt-get update
-linux-admin ALL=(root) NOPASSWD: /usr/bin/apt-get upgrade -y
-linux-admin ALL=(root) NOPASSWD: /usr/bin/apt-get install --
-linux-admin ALL=(root) NOPASSWD: /usr/bin/apt-get remove --
-linux-admin ALL=(root) NOPASSWD: /usr/sbin/ufw *
-linux-admin ALL=(root) NOPASSWD: /usr/sbin/useradd *, /usr/sbin/userdel *, /usr/bin/passwd *
-linux-admin ALL=(root) NOPASSWD: /usr/bin/wg set *, /usr/bin/wg-quick up *, /usr/bin/wg-quick down *
-linux-admin ALL=(root) NOPASSWD: /usr/bin/tailscale up, /usr/bin/tailscale down, /usr/bin/tailscale set *
+# linux-webui sudoers — managed by install.sh
+linux-webui ALL=(root) NOPASSWD: /sbin/reboot
+linux-webui ALL=(root) NOPASSWD: /usr/bin/apt-get update
+linux-webui ALL=(root) NOPASSWD: /usr/bin/apt-get upgrade -y
+linux-webui ALL=(root) NOPASSWD: /usr/bin/apt-get install --
+linux-webui ALL=(root) NOPASSWD: /usr/bin/apt-get remove --
+linux-webui ALL=(root) NOPASSWD: /usr/sbin/ufw *
+linux-webui ALL=(root) NOPASSWD: /usr/sbin/useradd *, /usr/sbin/userdel *, /usr/bin/passwd *
+linux-webui ALL=(root) NOPASSWD: /usr/bin/wg set *, /usr/bin/wg-quick up *, /usr/bin/wg-quick down *
+linux-webui ALL=(root) NOPASSWD: /usr/bin/tailscale up, /usr/bin/tailscale down, /usr/bin/tailscale set *
 EOF
 chmod 440 "$SUDOERS_FILE"
 visudo -cf "$SUDOERS_FILE" || die "Generated sudoers file is invalid"
@@ -117,10 +117,10 @@ visudo -cf "$SUDOERS_FILE" || die "Generated sudoers file is invalid"
 # ── 6. Polkit rule ────────────────────────────────────────────────────────────
 info "Installing polkit rule"
 cat > "$POLKIT_RULE" <<'EOF'
-// Allow linux-admin to manage systemd units without a password
+// Allow linux-webui to manage systemd units without a password
 polkit.addRule(function(action, subject) {
     if (action.id === "org.freedesktop.systemd1.manage-units" &&
-        subject.user === "linux-admin") {
+        subject.user === "linux-webui") {
         return polkit.Result.YES;
     }
 });
@@ -142,7 +142,7 @@ fi
 info "Installing systemd unit"
 cat > "/etc/systemd/system/$SERVICE_NAME.service" <<EOF
 [Unit]
-Description=linux-admin server administration panel
+Description=linux-webui server administration panel
 After=network.target
 
 [Service]

@@ -146,7 +146,7 @@ func NewRouter(opts RouterOptions) http.Handler {
 		r.With(adminMW).Delete("/api/admin/sessions/{id}", adm.Revoke)
 
 		// TOTP/2FA enrollment (self)
-		th := &handlers.TOTPHandler{DB: opts.DB, BcryptCost: opts.BcryptCost, Issuer: "linux-admin"}
+		th := &handlers.TOTPHandler{DB: opts.DB, BcryptCost: opts.BcryptCost, Issuer: "linux-webui"}
 		r.Get("/api/account/totp/status", th.Status)
 		r.Post("/api/account/totp/enroll", th.Enroll)
 		r.Post("/api/account/totp/confirm", th.Confirm)
@@ -216,11 +216,11 @@ func prometheusHandler(c *metrics.Collector) http.HandlerFunc {
 			return
 		}
 		w.Header().Set("Content-Type", "text/plain; version=0.0.4")
-		fmt.Fprintf(w, "# HELP linux_admin_cpu_percent CPU usage percent\n")
-		fmt.Fprintf(w, "linux_admin_cpu_percent %.2f\n", snap.CPUPercent)
-		fmt.Fprintf(w, "linux_admin_mem_used_kb %d\n", snap.MemUsed)
-		fmt.Fprintf(w, "linux_admin_mem_total_kb %d\n", snap.MemTotal)
-		fmt.Fprintf(w, "linux_admin_load1 %.2f\n", snap.LoadAvg1)
-		fmt.Fprintf(w, "linux_admin_uptime_seconds %.0f\n", snap.Uptime)
+		fmt.Fprintf(w, "# HELP linux_webui_cpu_percent CPU usage percent\n")
+		fmt.Fprintf(w, "linux_webui_cpu_percent %.2f\n", snap.CPUPercent)
+		fmt.Fprintf(w, "linux_webui_mem_used_kb %d\n", snap.MemUsed)
+		fmt.Fprintf(w, "linux_webui_mem_total_kb %d\n", snap.MemTotal)
+		fmt.Fprintf(w, "linux_webui_load1 %.2f\n", snap.LoadAvg1)
+		fmt.Fprintf(w, "linux_webui_uptime_seconds %.0f\n", snap.Uptime)
 	}
 }

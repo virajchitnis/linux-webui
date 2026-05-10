@@ -86,7 +86,7 @@ export default function About() {
         <div className="flex items-center gap-3">
           <Server className="h-6 w-6 text-blue-400" />
           <div>
-            <p className="text-white font-semibold text-lg">linux-admin</p>
+            <p className="text-white font-semibold text-lg">linux-webui</p>
             <p className="text-gray-500 text-sm">Server administration panel</p>
           </div>
         </div>
@@ -135,7 +135,7 @@ export default function About() {
 
       <p className="text-xs text-gray-600 text-center">
         <Cpu className="h-3 w-3 inline mr-1" />
-        linux-admin is open source software — MIT licensed
+        linux-webui is open source software — MIT licensed
       </p>
     </div>
   )

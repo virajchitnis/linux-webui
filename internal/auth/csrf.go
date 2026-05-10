@@ -6,7 +6,7 @@ import (
 	"net/http"
 )
 
-const csrfCookieName = "linux_admin_csrf"
+const csrfCookieName = "linux_webui_csrf"
 const csrfHeaderName = "X-CSRF-Token"
 
 func GenerateCSRFToken() (string, error) {

@@ -49,7 +49,7 @@ export default function Sidebar({ caps, role, username, onLogout }: Props) {
     <aside className="flex flex-col h-screen w-60 bg-gray-900 border-r border-gray-800 shrink-0">
       <div className="flex items-center gap-2 px-4 py-5 border-b border-gray-800">
         <Server size={20} className="text-blue-400" />
-        <span className="font-semibold text-white text-sm">linux-admin</span>
+        <span className="font-semibold text-white text-sm">linux-webui</span>
       </div>
 
       <nav className="flex-1 overflow-y-auto py-2">

@@ -38,15 +38,15 @@ var version = "dev"
 
 func main() {
 	var (
-		configPath = flag.String("config", "/etc/linux-admin/config.toml", "path to config file")
-		install    = flag.Bool("install", false, "install linux-admin (create user, polkit, sudoers, systemd unit)")
-		uninstall  = flag.Bool("uninstall", false, "uninstall linux-admin")
+		configPath = flag.String("config", "/etc/linux-webui/config.toml", "path to config file")
+		install    = flag.Bool("install", false, "install linux-webui (create user, polkit, sudoers, systemd unit)")
+		uninstall  = flag.Bool("uninstall", false, "uninstall linux-webui")
 		showVer    = flag.Bool("version", false, "print version and exit")
 	)
 	flag.Parse()
 
 	if *showVer {
-		fmt.Printf("linux-admin %s\n", version)
+		fmt.Printf("linux-webui %s\n", version)
 		return
 	}
 	if *install {
@@ -63,9 +63,9 @@ func main() {
 		log.Fatalf("load config: %v", err)
 	}
 
-	dbPath := "/etc/linux-admin/linux-admin.db"
-	if _, err := os.Stat("/etc/linux-admin"); os.IsNotExist(err) {
-		dbPath = "linux-admin.db"
+	dbPath := "/etc/linux-webui/linux-webui.db"
+	if _, err := os.Stat("/etc/linux-webui"); os.IsNotExist(err) {
+		dbPath = "linux-webui.db"
 	}
 	db, err := auth.OpenDB(dbPath)
 	if err != nil {
@@ -190,7 +190,7 @@ func main() {
 		}
 	}()
 
-	log.Printf("linux-admin %s listening on %s", version, cfg.Server.Listen)
+	log.Printf("linux-webui %s listening on %s", version, cfg.Server.Listen)
 	go func() {
 		if err := srv.ListenAndServeTLS("", ""); err != nil && err != http.ErrServerClosed {
 			log.Fatalf("https: %v", err)
@@ -261,7 +261,7 @@ func generateSelfSigned(certPath, keyPath string) error {
 	tmpl := &x509.Certificate{
 		SerialNumber: big.NewInt(1),
 		Subject: pkix.Name{
-			Organization: []string{"linux-admin"},
+			Organization: []string{"linux-webui"},
 			CommonName:   hostname,
 		},
 		DNSNames:    []string{hostname, "localhost"},

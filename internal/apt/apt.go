@@ -77,7 +77,7 @@ func RunInstall(ctx context.Context, pkg string, ch chan<- string) error {
 }
 
 func runApt(ctx context.Context, ch chan<- string, args ...string) error {
-	// Use absolute path; sudoers grants linux-admin NOPASSWD for apt-get
+	// Use absolute path; sudoers grants linux-webui NOPASSWD for apt-get
 	full := append([]string{"/usr/bin/apt-get"}, args...)
 	cmd := exec.CommandContext(ctx, "/usr/bin/sudo", full...)
 	cmd.Env = append(os.Environ(), "DEBIAN_FRONTEND=noninteractive", "LANG=C")

@@ -33,7 +33,7 @@ func (h *TOTPHandler) Enroll(w http.ResponseWriter, r *http.Request) {
 	session := middleware.SessionFromContext(r.Context())
 	issuer := h.Issuer
 	if issuer == "" {
-		issuer = "linux-admin"
+		issuer = "linux-webui"
 	}
 	secret, otpauthURL, err := auth.GenerateTOTPSecret(session.Username, issuer)
 	if err != nil {

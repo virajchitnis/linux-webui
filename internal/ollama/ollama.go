@@ -149,7 +149,7 @@ type SystemContext struct {
 // BuildSystemPrompt constructs the Ollama system prompt from runtime context.
 func BuildSystemPrompt(sc SystemContext) string {
 	var sb strings.Builder
-	sb.WriteString("You are a helpful Linux server administration assistant running inside linux-admin, a web-based server management panel.\n")
+	sb.WriteString("You are a helpful Linux server administration assistant running inside linux-webui, a web-based server management panel.\n")
 	sb.WriteString("You have access to the following live server context:\n\n")
 	sb.WriteString(fmt.Sprintf("Hostname: %s\n", sc.Hostname))
 	sb.WriteString(fmt.Sprintf("OS: %s\n", sc.Distro))

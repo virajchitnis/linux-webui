@@ -1,4 +1,4 @@
-// Package cron manages the linux-admin user's personal crontab.
+// Package cron manages the linux-webui user's personal crontab.
 package cron
 
 import (

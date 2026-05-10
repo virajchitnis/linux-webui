@@ -10,7 +10,7 @@ import (
 	"time"
 )
 
-const sessionCookieName = "linux_admin_session"
+const sessionCookieName = "linux_webui_session"
 
 var ErrNoSession = errors.New("no session")
 var ErrSessionExpired = errors.New("session expired")
