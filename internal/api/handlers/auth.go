@@ -18,8 +18,9 @@ type AuthHandler struct {
 
 func (h *AuthHandler) Login(w http.ResponseWriter, r *http.Request) {
 	var body struct {
-		Username string `json:"username"`
-		Password string `json:"password"`
+		Username  string `json:"username"`
+		Password  string `json:"password"`
+		TOTPCode  string `json:"totp_code,omitempty"`
 	}
 	r.Body = http.MaxBytesReader(w, r.Body, 1<<20)
 	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
@@ -38,6 +39,24 @@ func (h *AuthHandler) Login(w http.ResponseWriter, r *http.Request) {
 		_ = auth.RecordFailedLogin(h.DB, ip, 5, 15)
 		http.Error(w, "invalid credentials", http.StatusUnauthorized)
 		return
+	}
+
+	// If TOTP is enrolled, require a code.
+	if user.TOTPSecret != "" {
+		if body.TOTPCode == "" {
+			w.Header().Set("Content-Type", "application/json")
+			json.NewEncoder(w).Encode(map[string]any{"totp_required": true})
+			return
+		}
+		ok := auth.VerifyTOTP(user.TOTPSecret, body.TOTPCode)
+		if !ok {
+			// Try recovery code.
+			if err := auth.UseRecoveryCode(h.DB, user.ID, body.TOTPCode); err != nil {
+				_ = auth.RecordFailedLogin(h.DB, ip, 5, 15)
+				http.Error(w, "invalid credentials", http.StatusUnauthorized)
+				return
+			}
+		}
 	}
 
 	_ = auth.ResetFailedLogins(h.DB, ip)

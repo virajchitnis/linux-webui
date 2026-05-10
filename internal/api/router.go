@@ -145,6 +145,16 @@ func NewRouter(opts RouterOptions) http.Handler {
 		r.With(adminMW).Get("/api/admin/sessions", adm.List)
 		r.With(adminMW).Delete("/api/admin/sessions/{id}", adm.Revoke)
 
+		// TOTP/2FA enrollment (self)
+		th := &handlers.TOTPHandler{DB: opts.DB, BcryptCost: opts.BcryptCost, Issuer: "linux-admin"}
+		r.Get("/api/account/totp/status", th.Status)
+		r.Post("/api/account/totp/enroll", th.Enroll)
+		r.Post("/api/account/totp/confirm", th.Confirm)
+		r.Delete("/api/account/totp", th.Revoke)
+
+		// Audit log (admin only)
+		r.With(adminMW).Get("/api/admin/audit", (&handlers.AuditLogHandler{DB: opts.DB}).List)
+
 		// File browser (read-only)
 		if len(opts.FilesRoots) > 0 {
 			fh := &handlers.FilesHandler{AllowedRoots: opts.FilesRoots}

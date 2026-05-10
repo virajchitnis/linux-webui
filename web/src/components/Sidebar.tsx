@@ -2,7 +2,7 @@ import { NavLink } from 'react-router-dom'
 import {
   LayoutDashboard, Server, Terminal, ScrollText, Package,
   Activity, Shield, Users, FolderOpen, Clock, Bot,
-  Network, Container, Wifi, GitBranch, Info, LogOut, Settings,
+  Network, Container, Wifi, GitBranch, Info, LogOut, Settings, ClipboardList,
 } from 'lucide-react'
 import { cn } from '@/lib/cn'
 import type { Capabilities } from '@/hooks/useCapabilities'
@@ -41,6 +41,7 @@ export default function Sidebar({ caps, role, username, onLogout }: Props) {
     { to: '/wireguard', label: 'WireGuard', icon: <Wifi size={16} />, enabled: caps?.wireguard ?? false, tooltip: 'Install wg to enable' },
     { to: '/tailscale', label: 'Tailscale', icon: <GitBranch size={16} />, enabled: caps?.tailscale ?? false, tooltip: 'Install tailscale to enable' },
     { to: '/ai', label: 'AI Assistant', icon: <Bot size={16} />, enabled: caps?.ollama ?? false, tooltip: 'Install Ollama to enable' },
+    { to: '/audit', label: 'Audit Log', icon: <ClipboardList size={16} />, enabled: isAdmin },
     { to: '/about', label: 'About', icon: <Info size={16} />, enabled: true },
   ]
 

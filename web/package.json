@@ -31,6 +31,7 @@
     "clsx": "^2.1.1",
     "cronstrue": "^3.14.0",
     "lucide-react": "^1.14.0",
+    "qrcode.react": "^4.2.0",
     "react": "^19.2.6",
     "react-dom": "^19.2.6",
     "react-router-dom": "^7.15.0",
