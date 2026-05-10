@@ -11,7 +11,9 @@ import (
 	"github.com/virajchitnis/linux-webui/internal/api/middleware"
 	dbuspkg "github.com/virajchitnis/linux-webui/internal/dbus"
 	"github.com/virajchitnis/linux-webui/internal/distro"
+	"github.com/virajchitnis/linux-webui/internal/files"
 	"github.com/virajchitnis/linux-webui/internal/metrics"
+	"github.com/virajchitnis/linux-webui/internal/ollama"
 	"github.com/virajchitnis/linux-webui/internal/terminal"
 )
 
@@ -21,6 +23,8 @@ type RouterOptions struct {
 	Collector       *metrics.Collector
 	DBus            *dbuspkg.Client   // nil if D-Bus unavailable
 	TerminalManager *terminal.Manager // nil if bash/pty unavailable
+	OllamaClient    *ollama.Client    // nil if Ollama unavailable
+	FilesRoots      files.Roots       // empty → file browser disabled
 	Version         string
 	SecureCookie    bool
 	AuthTimeout     int
@@ -29,6 +33,8 @@ type RouterOptions struct {
 	AptEnabled      bool // Debian-family distros with apt in PATH
 	JournalEnabled  bool // journalctl in PATH
 	UFWEnabled      bool // ufw in PATH
+	CronEnabled     bool // crontab in PATH
+	SensorsEnabled  bool // /sys/class/hwmon present
 	FrontendHandler http.Handler
 }
 
@@ -138,6 +144,37 @@ func NewRouter(opts RouterOptions) http.Handler {
 		adm := &handlers.AdminSessionsHandler{DB: opts.DB}
 		r.With(adminMW).Get("/api/admin/sessions", adm.List)
 		r.With(adminMW).Delete("/api/admin/sessions/{id}", adm.Revoke)
+
+		// File browser (read-only)
+		if len(opts.FilesRoots) > 0 {
+			fh := &handlers.FilesHandler{AllowedRoots: opts.FilesRoots}
+			r.Get("/api/files/list", fh.List)
+			r.Get("/api/files/read", fh.Read)
+			r.Get("/api/files/roots", fh.GetRoots)
+		}
+
+		// Cron job editor
+		if opts.CronEnabled {
+			ch := &handlers.CronHandler{}
+			r.Get("/api/cron", ch.List)
+			r.With(adminMW).Post("/api/cron", ch.Add)
+			r.With(adminMW).Delete("/api/cron/{index}", ch.Delete)
+		}
+
+		// Network interfaces
+		r.Get("/api/network/interfaces", (&handlers.NetifHandler{}).List)
+
+		// Hardware sensors
+		if opts.SensorsEnabled {
+			r.Get("/api/sensors", (&handlers.SensorsHandler{}).Read)
+		}
+
+		// AI assistant (Ollama)
+		if opts.OllamaClient != nil {
+			ai := &handlers.AIHandler{Client: opts.OllamaClient, Metrics: opts.Collector}
+			r.Get("/ws/ai", ai.ServeHTTP)
+			r.Get("/api/ai/models", ai.Models)
+		}
 	})
 
 	// Serve embedded frontend (SPA fallback)

@@ -26,7 +26,10 @@ import (
 	"github.com/virajchitnis/linux-webui/internal/config"
 	dbuspkg "github.com/virajchitnis/linux-webui/internal/dbus"
 	"github.com/virajchitnis/linux-webui/internal/distro"
+	"github.com/virajchitnis/linux-webui/internal/files"
 	"github.com/virajchitnis/linux-webui/internal/metrics"
+	"github.com/virajchitnis/linux-webui/internal/ollama"
+	"github.com/virajchitnis/linux-webui/internal/sensors"
 	"github.com/virajchitnis/linux-webui/internal/terminal"
 )
 
@@ -111,6 +114,28 @@ func main() {
 	if _, e := os.Stat("/usr/sbin/ufw"); e == nil {
 		ufwEnabled = true
 	}
+	cronEnabled := false
+	for _, p := range []string{"/usr/bin/crontab", "/bin/crontab"} {
+		if _, e := os.Stat(p); e == nil {
+			cronEnabled = true
+			break
+		}
+	}
+
+	// File browser roots.
+	var fileBrowserRoots files.Roots
+	if cfg.Features.FileBrowserEnabled && len(cfg.Features.FileBrowserRoots) > 0 {
+		fileBrowserRoots = files.Roots(cfg.Features.FileBrowserRoots)
+	}
+
+	// Ollama AI client.
+	var ollamaClient *ollama.Client
+	if cfg.Ollama.Enabled || ollama.Available(cfg.Ollama.Endpoint) {
+		ollamaClient = ollama.NewClient(cfg.Ollama.Endpoint, cfg.Ollama.Model)
+		log.Printf("Ollama available at %s (model: %s)", cfg.Ollama.Endpoint, cfg.Ollama.Model)
+	}
+
+	sensorsEnabled := sensors.Available()
 
 	router := api.NewRouter(api.RouterOptions{
 		DB:              db,
@@ -118,6 +143,8 @@ func main() {
 		Collector:       collector,
 		DBus:            dbusClient,
 		TerminalManager: termMgr,
+		OllamaClient:    ollamaClient,
+		FilesRoots:      fileBrowserRoots,
 		Version:         version,
 		SecureCookie:    true,
 		AuthTimeout:     cfg.Auth.SessionTimeoutMinutes,
@@ -126,6 +153,8 @@ func main() {
 		AptEnabled:      aptEnabled,
 		JournalEnabled:  journalEnabled,
 		UFWEnabled:      ufwEnabled,
+		CronEnabled:     cronEnabled,
+		SensorsEnabled:  sensorsEnabled,
 		FrontendHandler: frontendHandler(),
 	})
 
