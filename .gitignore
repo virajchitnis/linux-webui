@@ -1,6 +1,6 @@
 # Go build output
-/linux-admin
-/linux-admin.exe
+/linux-webui
+/linux-webui.exe
 
 # Frontend build output
 web/dist/
