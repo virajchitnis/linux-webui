@@ -71,7 +71,7 @@ func (m *Manager) Create(id string) (*Session, error) {
 
 	go func() {
 		_ = cmd.Wait()
-		ptmx.Close()
+		_ = ptmx.Close()
 		m.mu.Lock()
 		delete(m.sessions, id)
 		m.mu.Unlock()
@@ -194,5 +194,5 @@ func (s *Session) terminate() {
 	if s.cmd.Process != nil {
 		_ = s.cmd.Process.Signal(syscall.SIGHUP)
 	}
-	s.ptmx.Close()
+	_ = s.ptmx.Close()
 }

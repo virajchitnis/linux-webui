@@ -30,7 +30,7 @@ func New() (*Client, error) {
 }
 
 func (c *Client) Close() {
-	c.conn.Close()
+	_ = c.conn.Close()
 }
 
 // UnitInfo holds basic unit information.

@@ -152,10 +152,10 @@ func validUsername(name string) bool {
 		return false
 	}
 	for i, c := range name {
-		if i == 0 && !((c >= 'a' && c <= 'z') || c == '_') {
+		if i == 0 && (c < 'a' || c > 'z') && c != '_' {
 			return false
 		}
-		if !((c >= 'a' && c <= 'z') || (c >= '0' && c <= '9') || c == '_' || c == '-') {
+		if (c < 'a' || c > 'z') && (c < '0' || c > '9') && c != '_' && c != '-' {
 			return false
 		}
 	}

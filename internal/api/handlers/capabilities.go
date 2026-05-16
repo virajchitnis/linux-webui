@@ -80,7 +80,7 @@ func (c *Capabilities) SetOllama(ok bool) {
 func (c *Capabilities) Get(key string) bool {
 	c.mu.RLock()
 	defer c.mu.RUnlock()
-	v, _ := c.data[key]
+	v := c.data[key]
 	b, _ := v.(bool)
 	return b
 }
