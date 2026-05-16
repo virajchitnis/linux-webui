@@ -131,22 +131,7 @@ jobs:
       - name: Start server
         run: |
           mkdir -p /tmp/lwui-e2e/tls
-          cat > /tmp/lwui-e2e/config.toml <<'TOML'
-[server]
-listen      = "127.0.0.1:8443"
-tls_cert    = "/tmp/lwui-e2e/tls/cert.pem"
-tls_key     = "/tmp/lwui-e2e/tls/key.pem"
-http_listen = "127.0.0.1:8080"
-
-[auth]
-bcrypt_cost = 4
-
-[features]
-terminal_enabled = false
-
-[ollama]
-enabled = false
-TOML
+          cp e2e/fixtures/server.toml /tmp/lwui-e2e/config.toml
           cd /tmp/lwui-e2e && $GITHUB_WORKSPACE/linux-webui --config /tmp/lwui-e2e/config.toml \
             > /tmp/lwui-e2e/server.log 2>&1 &
           echo $! > /tmp/lwui-e2e/server.pid
