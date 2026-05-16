@@ -6,6 +6,7 @@
 web/dist/
 ui/dist/
 web/node_modules/
+e2e/node_modules/
 
 # SQLite databases
 *.db
