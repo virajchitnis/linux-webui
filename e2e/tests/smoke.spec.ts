@@ -25,22 +25,24 @@ test('health endpoint returns 200 without auth', async ({ request }) => {
 })
 
 test('login page renders', async ({ page }) => {
-  await page.goto('/')
+  await page.goto('/login')
   await expect(page.locator('h1')).toContainText('linux-webui')
   await expect(page.locator('input[type="text"]')).toBeVisible()
   await expect(page.locator('input[type="password"]')).toBeVisible()
 })
 
 test('wrong credentials show error', async ({ page }) => {
-  await page.goto('/')
+  await page.goto('/login')
   await page.fill('input[type="text"]', 'admin')
   await page.fill('input[type="password"]', 'wrongpassword')
   await page.click('button[type="submit"]')
-  await expect(page.locator('text=invalid credentials').or(page.locator('text=Invalid')).or(page.locator('[class*="red"]'))).toBeVisible()
+  await expect(
+    page.locator('[class*="red"]').or(page.getByText(/invalid|incorrect|failed/i))
+  ).toBeVisible()
 })
 
 test('login and dashboard', async ({ page }) => {
-  await page.goto('/')
+  await page.goto('/login')
   await page.fill('input[type="text"]', ADMIN_USER)
   await page.fill('input[type="password"]', ADMIN_PASS)
   await page.click('button[type="submit"]')
@@ -48,9 +50,8 @@ test('login and dashboard', async ({ page }) => {
   await expect(page.locator('text=Dashboard')).toBeVisible()
 })
 
-test('capabilities API returns expected shape', async ({ request, page }) => {
-  // Log in first to get a session cookie.
-  await page.goto('/')
+test('capabilities API returns expected shape', async ({ page }) => {
+  await page.goto('/login')
   await page.fill('input[type="text"]', ADMIN_USER)
   await page.fill('input[type="password"]', ADMIN_PASS)
   await page.click('button[type="submit"]')
@@ -63,7 +64,7 @@ test('capabilities API returns expected shape', async ({ request, page }) => {
 })
 
 test('logout redirects to login', async ({ page }) => {
-  await page.goto('/')
+  await page.goto('/login')
   await page.fill('input[type="text"]', ADMIN_USER)
   await page.fill('input[type="password"]', ADMIN_PASS)
   await page.click('button[type="submit"]')
