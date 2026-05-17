@@ -3,7 +3,8 @@ name: CI
 on:
   push:
     branches:
-      - claude/modernize-server-console-Jg45U
+      - master
+      - 'claude/**'
   pull_request:
     branches:
       - master
