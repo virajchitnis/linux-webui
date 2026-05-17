@@ -5,7 +5,7 @@ MODULE  := github.com/virajchitnis/linux-webui
 LDFLAGS := -X main.version=$(VERSION) -s -w
 GOFLAGS := -tags production
 
-.PHONY: all build dev test lint e2e clean
+.PHONY: all build dev test lint e2e e2e-docker clean
 
 all: build
 
@@ -32,6 +32,10 @@ lint:
 
 e2e:
 	cd e2e && npx playwright test
+
+e2e-docker:
+	docker build -f Dockerfile.e2e -t linux-webui-e2e .
+	docker run --rm linux-webui-e2e
 
 clean:
 	rm -f $(BINARY)

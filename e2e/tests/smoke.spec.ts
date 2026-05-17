@@ -47,7 +47,7 @@ test('login and dashboard', async ({ page }) => {
   await page.fill('input[type="password"]', ADMIN_PASS)
   await page.click('button[type="submit"]')
   await expect(page).toHaveURL(/\/dashboard/)
-  await expect(page.locator('text=Dashboard')).toBeVisible()
+  await expect(page.getByRole('heading', { name: 'Dashboard' })).toBeVisible()
 })
 
 test('capabilities API returns expected shape', async ({ page }) => {

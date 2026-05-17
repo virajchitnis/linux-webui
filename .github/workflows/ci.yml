@@ -3,7 +3,8 @@ name: CI
 on:
   push:
     branches:
-      - claude/modernize-server-console-Jg45U
+      - master
+      - 'claude/**'
   pull_request:
     branches:
       - master
@@ -120,12 +121,12 @@ jobs:
           -o linux-webui
           ./cmd/linux-webui
 
-      - name: Install Playwright browsers
-        run: npx playwright install --with-deps chromium
-        working-directory: e2e
-
       - name: Install e2e deps
         run: npm ci
+        working-directory: e2e
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium
         working-directory: e2e
 
       - name: Start server
