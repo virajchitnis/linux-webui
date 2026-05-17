@@ -6,6 +6,7 @@ import (
 	"embed"
 	"io/fs"
 	"net/http"
+	"strings"
 )
 
 //go:embed all:dist
@@ -18,9 +19,14 @@ func Handler() http.Handler {
 	}
 	fileServer := http.FileServer(http.FS(sub))
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		// Check if file exists; if not, serve index.html for SPA routing.
-		f, err := sub.Open(r.URL.Path)
+		// fs.FS paths must not start with '/'; strip it before the existence check.
+		name := strings.TrimPrefix(r.URL.Path, "/")
+		if name == "" {
+			name = "."
+		}
+		f, err := sub.Open(name)
 		if err != nil {
+			// File not found: serve index.html for SPA client-side routing.
 			r2 := r.Clone(r.Context())
 			r2.URL.Path = "/"
 			fileServer.ServeHTTP(w, r2)

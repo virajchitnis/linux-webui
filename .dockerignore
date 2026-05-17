@@ -1,0 +1,9 @@
+linux-webui
+web/dist
+web/node_modules
+e2e/node_modules
+e2e/playwright-report
+e2e/test-results
+.git
+.claude
+*.db

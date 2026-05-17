@@ -10,6 +10,7 @@ export default defineConfig({
     baseURL: 'https://127.0.0.1:8443',
     ignoreHTTPSErrors: true,
     trace: 'on-first-retry',
+    screenshot: 'only-on-failure',
   },
 
   projects: [
