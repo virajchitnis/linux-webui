@@ -45,6 +45,23 @@ func TestValidateAction(t *testing.T) {
 	}
 }
 
+func TestDeleteRule_InvalidNum(t *testing.T) {
+	// DeleteRule validates that num >= 1 before running any process.
+	if err := DeleteRule(0); err == nil {
+		t.Error("DeleteRule(0) should return error")
+	}
+	if err := DeleteRule(-5); err == nil {
+		t.Error("DeleteRule(-5) should return error")
+	}
+}
+
+func TestAddRule_InvalidProto(t *testing.T) {
+	// AddRule validates proto before running any process.
+	if err := AddRule("allow", "22", "sctp"); err == nil {
+		t.Error("AddRule with invalid proto should return error")
+	}
+}
+
 func TestRuleRegex(t *testing.T) {
 	// Lines that should match the rule pattern
 	matchLines := []string{

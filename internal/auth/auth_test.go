@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"os"
+	"strings"
 	"testing"
 
 	"github.com/virajchitnis/linux-webui/internal/auth"
@@ -290,6 +291,176 @@ func TestBruteForceIPAndUsername_Independent(t *testing.T) {
 	}
 	if !auth.IsLockedOutUsername(db, username) {
 		t.Error("username should be locked")
+	}
+}
+
+// ── TOTP ──────────────────────────────────────────────────────────────────────
+
+func TestGenerateTOTPSecret(t *testing.T) {
+	secret, url, err := auth.GenerateTOTPSecret("alice", "linux-webui")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if secret == "" {
+		t.Error("expected non-empty secret")
+	}
+	if !strings.HasPrefix(url, "otpauth://totp/") {
+		t.Errorf("expected otpauth URL, got %q", url)
+	}
+}
+
+func TestVerifyTOTP_Invalid(t *testing.T) {
+	// Non-numeric and too-short codes must fail.
+	if auth.VerifyTOTP("JBSWY3DPEHPK3PXP", "abc") {
+		t.Error("non-numeric code should be invalid")
+	}
+	if auth.VerifyTOTP("JBSWY3DPEHPK3PXP", "") {
+		t.Error("empty code should be invalid")
+	}
+}
+
+func TestSaveTOTPSecret(t *testing.T) {
+	db := openTestDB(t)
+	_ = auth.CreateUser(db, "henry", "pass1234", "admin", 4)
+	u, _ := auth.GetUserByUsername(db, "henry")
+
+	secret, _, _ := auth.GenerateTOTPSecret("henry", "linux-webui")
+	codes, err := auth.SaveTOTPSecret(db, u.ID, secret, 4)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(codes) != 8 {
+		t.Fatalf("expected 8 recovery codes, got %d", len(codes))
+	}
+	for _, c := range codes {
+		if len(c) == 0 {
+			t.Error("recovery code should be non-empty")
+		}
+		if !strings.Contains(c, "-") {
+			t.Errorf("recovery code should contain dash, got %q", c)
+		}
+	}
+
+	u2, _ := auth.GetUserByUsername(db, "henry")
+	if u2.TOTPSecret != secret {
+		t.Error("TOTP secret not persisted")
+	}
+}
+
+func TestUseRecoveryCode(t *testing.T) {
+	db := openTestDB(t)
+	_ = auth.CreateUser(db, "iris", "pass1234", "admin", 4)
+	u, _ := auth.GetUserByUsername(db, "iris")
+
+	secret, _, _ := auth.GenerateTOTPSecret("iris", "linux-webui")
+	codes, _ := auth.SaveTOTPSecret(db, u.ID, secret, 4)
+
+	// First use succeeds.
+	if err := auth.UseRecoveryCode(db, u.ID, codes[0]); err != nil {
+		t.Fatalf("UseRecoveryCode failed: %v", err)
+	}
+	// Same code rejected on reuse.
+	if err := auth.UseRecoveryCode(db, u.ID, codes[0]); err != auth.ErrInvalidTOTP {
+		t.Errorf("reused recovery code should return ErrInvalidTOTP, got %v", err)
+	}
+	// Wrong code rejected.
+	if err := auth.UseRecoveryCode(db, u.ID, "INVALID-CODE"); err != auth.ErrInvalidTOTP {
+		t.Errorf("invalid recovery code should return ErrInvalidTOTP, got %v", err)
+	}
+}
+
+func TestRevokeTOTP(t *testing.T) {
+	db := openTestDB(t)
+	_ = auth.CreateUser(db, "james", "pass1234", "admin", 4)
+	u, _ := auth.GetUserByUsername(db, "james")
+
+	secret, _, _ := auth.GenerateTOTPSecret("james", "linux-webui")
+	_, _ = auth.SaveTOTPSecret(db, u.ID, secret, 4)
+
+	if err := auth.RevokeTOTP(db, u.ID); err != nil {
+		t.Fatal(err)
+	}
+	u2, _ := auth.GetUserByUsername(db, "james")
+	if u2.TOTPSecret != "" {
+		t.Error("TOTP secret should be empty after revoke")
+	}
+}
+
+// ── Additional SQL coverage ────────────────────────────────────────────────────
+
+func TestListUsers(t *testing.T) {
+	db := openTestDB(t)
+	_ = auth.CreateUser(db, "kate", "pass1234", "admin", 4)
+	_ = auth.CreateUser(db, "leo", "pass1234", "readonly", 4)
+
+	users, err := auth.ListUsers(db)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(users) < 2 {
+		t.Fatalf("expected at least 2 users, got %d", len(users))
+	}
+}
+
+func TestListAllSessions(t *testing.T) {
+	db := openTestDB(t)
+	_ = auth.CreateUser(db, "mary", "pass1234", "admin", 4)
+	u, _ := auth.GetUserByUsername(db, "mary")
+
+	_, _ = auth.CreateSession(db, u.ID, "1.2.3.4", "agent-a")
+	_, _ = auth.CreateSession(db, u.ID, "5.6.7.8", "agent-b")
+
+	sessions, err := auth.ListAllSessions(db)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(sessions) < 2 {
+		t.Fatalf("expected at least 2 sessions, got %d", len(sessions))
+	}
+	if _, ok := sessions[0]["username"]; !ok {
+		t.Error("session entry should include username field")
+	}
+}
+
+func TestDeleteUserSessions(t *testing.T) {
+	db := openTestDB(t)
+	_ = auth.CreateUser(db, "nick", "pass1234", "admin", 4)
+	u, _ := auth.GetUserByUsername(db, "nick")
+
+	_, _ = auth.CreateSession(db, u.ID, "1.2.3.4", "agent")
+	_, _ = auth.CreateSession(db, u.ID, "5.6.7.8", "agent")
+
+	if err := auth.DeleteUserSessions(db, u.ID); err != nil {
+		t.Fatal(err)
+	}
+	sessions, _ := auth.ListSessions(db, u.ID)
+	if len(sessions) != 0 {
+		t.Errorf("expected 0 sessions after DeleteUserSessions, got %d", len(sessions))
+	}
+}
+
+func TestPruneAuditLog(t *testing.T) {
+	db := openTestDB(t)
+	_ = auth.CreateUser(db, "olive", "pass1234", "admin", 4)
+	u, _ := auth.GetUserByUsername(db, "olive")
+	auth.LogAction(db, u.ID, "olive", "test_action", "", "127.0.0.1")
+
+	// Zero days = no-op.
+	if err := auth.PruneAuditLog(db, 0); err != nil {
+		t.Fatal(err)
+	}
+	entries, _ := auth.GetAuditLog(db, 100)
+	if len(entries) == 0 {
+		t.Error("entries should survive a 0-day prune")
+	}
+
+	// 30-day retention won't delete a just-created entry.
+	if err := auth.PruneAuditLog(db, 30); err != nil {
+		t.Fatal(err)
+	}
+	entries2, _ := auth.GetAuditLog(db, 100)
+	if len(entries2) == 0 {
+		t.Error("recent entries should survive 30-day prune")
 	}
 }
 

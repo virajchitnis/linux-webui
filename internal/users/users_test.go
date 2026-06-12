@@ -112,6 +112,72 @@ func TestParsePasswd_SystemFlag(t *testing.T) {
 	}
 }
 
+func TestListUsers(t *testing.T) {
+	users, err := ListUsers()
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(users) == 0 {
+		t.Error("expected at least one user from /etc/passwd")
+	}
+	var foundRoot bool
+	for _, u := range users {
+		if u.Username == "root" && u.UID == 0 {
+			foundRoot = true
+		}
+	}
+	if !foundRoot {
+		t.Error("expected root user (UID=0) in /etc/passwd")
+	}
+}
+
+func TestListGroups(t *testing.T) {
+	groups, err := ListGroups()
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(groups) == 0 {
+		t.Error("expected at least one group from /etc/group")
+	}
+	var foundRoot bool
+	for _, g := range groups {
+		if g.Name == "root" && g.GID == 0 {
+			foundRoot = true
+		}
+	}
+	if !foundRoot {
+		t.Error("expected root group (GID=0) in /etc/group")
+	}
+}
+
+func TestCreateUser_InvalidUsername(t *testing.T) {
+	err := CreateUser("Invalid-Name-Uppercase")
+	if err == nil {
+		t.Error("CreateUser with invalid username should return error")
+	}
+}
+
+func TestDeleteUser_InvalidUsername(t *testing.T) {
+	err := DeleteUser("Has Spaces")
+	if err == nil {
+		t.Error("DeleteUser with invalid username should return error")
+	}
+}
+
+func TestSetPassword_InvalidUsername(t *testing.T) {
+	err := SetPassword("HasUppercase", "password123")
+	if err == nil {
+		t.Error("SetPassword with invalid username should return error")
+	}
+}
+
+func TestSetPassword_TooShort(t *testing.T) {
+	err := SetPassword("alice", "short")
+	if err == nil {
+		t.Error("SetPassword with short password should return error")
+	}
+}
+
 func TestParseGroup(t *testing.T) {
 	cases := []struct {
 		line    string

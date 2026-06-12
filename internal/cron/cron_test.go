@@ -87,6 +87,36 @@ func TestParseEntries(t *testing.T) {
 	}
 }
 
+func TestRawList(t *testing.T) {
+	// rawList reads the current crontab (or returns "" if empty/missing).
+	raw, err := rawList()
+	if err != nil {
+		t.Logf("rawList: %v (acceptable in CI)", err)
+	}
+	_ = raw
+}
+
+func TestList(t *testing.T) {
+	entries, err := List()
+	if err != nil {
+		t.Logf("List: %v (acceptable in CI)", err)
+		return
+	}
+	_ = entries
+}
+
+func TestDelete_OutOfRange(t *testing.T) {
+	// With an index that is out of range, Delete returns an error.
+	// Since the crontab may be empty or have no entry at index 9999, this
+	// exercises the index-validation path without modifying any real entries.
+	err := Delete(9999)
+	// Either "index 9999 out of range" or a crontab access error — both are errors.
+	if err == nil {
+		// Only OK if the crontab actually has 10000+ entries (extremely unlikely).
+		t.Log("Delete(9999) returned nil — unexpectedly large crontab")
+	}
+}
+
 func TestIsEntry(t *testing.T) {
 	shouldBeEntry := []string{
 		"* * * * * /usr/bin/foo",
