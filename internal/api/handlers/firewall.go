@@ -3,6 +3,7 @@ package handlers
 import (
 	"database/sql"
 	"encoding/json"
+	"log"
 	"net/http"
 	"strconv"
 
@@ -19,7 +20,8 @@ type FirewallHandler struct {
 func (h *FirewallHandler) Status(w http.ResponseWriter, r *http.Request) {
 	s, err := firewall.GetStatus()
 	if err != nil {
-		http.Error(w, "ufw: "+err.Error(), http.StatusInternalServerError)
+		log.Printf("ufw status: %v", err)
+		http.Error(w, "failed to get firewall status", http.StatusInternalServerError)
 		return
 	}
 	w.Header().Set("Content-Type", "application/json")
@@ -40,7 +42,8 @@ func (h *FirewallHandler) AddRule(w http.ResponseWriter, r *http.Request) {
 		body.Proto = "tcp"
 	}
 	if err := firewall.AddRule(body.Action, body.Port, body.Proto); err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
+		log.Printf("ufw add rule: %v", err)
+		http.Error(w, "failed to add firewall rule", http.StatusBadRequest)
 		return
 	}
 	sess := middleware.SessionFromContext(r.Context())
@@ -57,7 +60,8 @@ func (h *FirewallHandler) DeleteRule(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	if err := firewall.DeleteRule(num); err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
+		log.Printf("ufw delete rule %d: %v", num, err)
+		http.Error(w, "failed to delete firewall rule", http.StatusBadRequest)
 		return
 	}
 	sess := middleware.SessionFromContext(r.Context())
@@ -69,7 +73,8 @@ func (h *FirewallHandler) DeleteRule(w http.ResponseWriter, r *http.Request) {
 
 func (h *FirewallHandler) Enable(w http.ResponseWriter, r *http.Request) {
 	if err := firewall.Enable(); err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		log.Printf("ufw enable: %v", err)
+		http.Error(w, "failed to enable firewall", http.StatusInternalServerError)
 		return
 	}
 	sess := middleware.SessionFromContext(r.Context())
@@ -81,7 +86,8 @@ func (h *FirewallHandler) Enable(w http.ResponseWriter, r *http.Request) {
 
 func (h *FirewallHandler) Disable(w http.ResponseWriter, r *http.Request) {
 	if err := firewall.Disable(); err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		log.Printf("ufw disable: %v", err)
+		http.Error(w, "failed to disable firewall", http.StatusInternalServerError)
 		return
 	}
 	sess := middleware.SessionFromContext(r.Context())

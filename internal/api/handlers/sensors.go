@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"encoding/json"
+	"log"
 	"net/http"
 
 	"github.com/virajchitnis/linux-webui/internal/sensors"
@@ -13,7 +14,8 @@ type SensorsHandler struct{}
 func (h *SensorsHandler) Read(w http.ResponseWriter, r *http.Request) {
 	chips, err := sensors.ReadAll()
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		log.Printf("sensors read: %v", err)
+		http.Error(w, "failed to read sensors", http.StatusInternalServerError)
 		return
 	}
 	w.Header().Set("Content-Type", "application/json")

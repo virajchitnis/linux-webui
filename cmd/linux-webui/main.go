@@ -147,6 +147,7 @@ func main() {
 		FilesRoots:      fileBrowserRoots,
 		Version:         version,
 		SecureCookie:    true,
+		DevMode:         os.Getenv("LINUX_WEBUI_DEV") == "1",
 		AuthTimeout:     cfg.Auth.SessionTimeoutMinutes,
 		BcryptCost:      cfg.Auth.BcryptCost,
 		PrometheusOn:    cfg.Monitoring.Prometheus,

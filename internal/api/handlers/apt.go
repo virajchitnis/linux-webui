@@ -3,6 +3,7 @@ package handlers
 import (
 	"database/sql"
 	"encoding/json"
+	"log"
 	"net/http"
 
 	"github.com/coder/websocket"
@@ -14,13 +15,15 @@ import (
 
 // AptHandler handles package-manager REST and WebSocket endpoints.
 type AptHandler struct {
-	DB *sql.DB
+	DB         *sql.DB
+	AcceptOpts *websocket.AcceptOptions
 }
 
 func (h *AptHandler) Upgradable(w http.ResponseWriter, r *http.Request) {
 	pkgs, err := apt.ListUpgradable()
 	if err != nil {
-		http.Error(w, "apt list: "+err.Error(), http.StatusInternalServerError)
+		log.Printf("apt list upgradable: %v", err)
+		http.Error(w, "failed to list upgradable packages", http.StatusInternalServerError)
 		return
 	}
 	if pkgs == nil {
@@ -42,7 +45,7 @@ type aptRunPayload struct {
 
 // Stream handles WS /ws/apt — client sends a run command, server streams apt-get output.
 func (h *AptHandler) Stream(w http.ResponseWriter, r *http.Request) {
-	c, err := websocket.Accept(w, r, &websocket.AcceptOptions{InsecureSkipVerify: true})
+	c, err := websocket.Accept(w, r, h.AcceptOpts)
 	if err != nil {
 		return
 	}

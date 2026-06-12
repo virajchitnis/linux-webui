@@ -30,7 +30,7 @@ var reRule = regexp.MustCompile(`^\[\s*(\d+)\]\s+(\S+(?:\s+\(v6\))?)\s+(ALLOW IN
 
 // GetStatus returns the current UFW status and numbered rules.
 func GetStatus() (*Status, error) {
-	out, err := runSudo("ufw", "status", "numbered")
+	out, err := runSudo("status", "numbered")
 	if err != nil {
 		return nil, fmt.Errorf("ufw status: %w", err)
 	}
@@ -78,7 +78,7 @@ func AddRule(action, port, proto string) error {
 	if proto != "any" {
 		target = port + "/" + proto
 	}
-	_, err := runSudo("ufw", action, target)
+	_, err := runSudo(action, target)
 	return err
 }
 
@@ -99,20 +99,20 @@ func DeleteRule(num int) error {
 
 // Enable runs `sudo ufw --force enable`.
 func Enable() error {
-	_, err := runSudo("ufw", "--force", "enable")
+	_, err := runSudo("--force", "enable")
 	return err
 }
 
 // Disable runs `sudo ufw disable`.
 func Disable() error {
-	_, err := runSudo("ufw", "disable")
+	_, err := runSudo("disable")
 	return err
 }
 
 // ─── helpers ─────────────────────────────────────────────────────────────────
 
 func runSudo(args ...string) (string, error) {
-	full := append([]string{"/usr/sbin/ufw"}, args[1:]...)
+	full := append([]string{"/usr/sbin/ufw"}, args...)
 	cmd := exec.Command("/usr/bin/sudo", full...)
 	var out, errBuf bytes.Buffer
 	cmd.Stdout = &out

@@ -9,13 +9,12 @@ import (
 )
 
 type MetricsWSHandler struct {
-	Collector *metrics.Collector
+	Collector  *metrics.Collector
+	AcceptOpts *websocket.AcceptOptions
 }
 
 func (h *MetricsWSHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	c, err := websocket.Accept(w, r, &websocket.AcceptOptions{
-		InsecureSkipVerify: true, // Origin validated by middleware
-	})
+	c, err := websocket.Accept(w, r, h.AcceptOpts)
 	if err != nil {
 		return
 	}

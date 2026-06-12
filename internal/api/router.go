@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/coder/websocket"
 	"github.com/go-chi/chi/v5"
 	chimiddleware "github.com/go-chi/chi/v5/middleware"
 	"github.com/virajchitnis/linux-webui/internal/api/handlers"
@@ -36,12 +37,21 @@ type RouterOptions struct {
 	CronEnabled     bool // crontab in PATH
 	SensorsEnabled  bool // /sys/class/hwmon present
 	FrontendHandler http.Handler
+	DevMode         bool // true when LINUX_WEBUI_DEV=1; relaxes WS origin check for Vite proxy
 }
 
 func NewRouter(opts RouterOptions) http.Handler {
 	r := chi.NewRouter()
 	r.Use(chimiddleware.RealIP)
 	r.Use(chimiddleware.Recoverer)
+
+	// In dev mode (Vite proxy) the browser Origin doesn't match the Go server
+	// host, so we skip the origin check. In production the default same-origin
+	// check is enforced.
+	var wsOpts *websocket.AcceptOptions
+	if opts.DevMode {
+		wsOpts = &websocket.AcceptOptions{InsecureSkipVerify: true}
+	}
 
 	caps := handlers.InitCapabilities(opts.Distro)
 	rl := middleware.NewRateLimiter(20, 100)
@@ -77,7 +87,7 @@ func NewRouter(opts RouterOptions) http.Handler {
 		r.Get("/api/capabilities", caps.Handler())
 
 		// WebSocket: metrics stream
-		r.Get("/ws/metrics", (&handlers.MetricsWSHandler{Collector: opts.Collector}).ServeHTTP)
+		r.Get("/ws/metrics", (&handlers.MetricsWSHandler{Collector: opts.Collector, AcceptOpts: wsOpts}).ServeHTTP)
 
 		// Services (systemd via D-Bus)
 		if opts.DBus != nil {
@@ -92,7 +102,7 @@ func NewRouter(opts RouterOptions) http.Handler {
 
 		// APT package manager
 		if opts.AptEnabled {
-			apt := &handlers.AptHandler{DB: opts.DB}
+			apt := &handlers.AptHandler{DB: opts.DB, AcceptOpts: wsOpts}
 			r.Get("/api/packages/upgradable", apt.Upgradable)
 			r.Get("/api/packages/status", apt.Status)
 			r.With(adminMW).Get("/ws/apt", apt.Stream)
@@ -100,12 +110,12 @@ func NewRouter(opts RouterOptions) http.Handler {
 
 		// Journal log viewer
 		if opts.JournalEnabled {
-			r.Get("/ws/logs", (&handlers.JournalWSHandler{}).ServeHTTP)
+			r.Get("/ws/logs", (&handlers.JournalWSHandler{AcceptOpts: wsOpts}).ServeHTTP)
 		}
 
 		// Web terminal (PTY)
 		if opts.TerminalManager != nil {
-			th := &handlers.TerminalHandler{Manager: opts.TerminalManager, DB: opts.DB}
+			th := &handlers.TerminalHandler{Manager: opts.TerminalManager, DB: opts.DB, AcceptOpts: wsOpts}
 			r.With(adminMW).Post("/api/terminal/new", th.New)
 			r.With(adminMW).Get("/ws/terminal/{id}", th.Connect)
 		}
@@ -181,7 +191,7 @@ func NewRouter(opts RouterOptions) http.Handler {
 
 		// AI assistant (Ollama)
 		if opts.OllamaClient != nil {
-			ai := &handlers.AIHandler{Client: opts.OllamaClient, Metrics: opts.Collector}
+			ai := &handlers.AIHandler{Client: opts.OllamaClient, Metrics: opts.Collector, AcceptOpts: wsOpts}
 			r.Get("/ws/ai", ai.ServeHTTP)
 			r.Get("/api/ai/models", ai.Models)
 		}

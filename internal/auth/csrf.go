@@ -2,6 +2,7 @@ package auth
 
 import (
 	"crypto/rand"
+	"crypto/subtle"
 	"encoding/hex"
 	"net/http"
 )
@@ -35,5 +36,8 @@ func ValidateCSRF(r *http.Request) bool {
 		return false
 	}
 	header := r.Header.Get(csrfHeaderName)
-	return cookie.Value != "" && cookie.Value == header
+	if cookie.Value == "" || header == "" {
+		return false
+	}
+	return subtle.ConstantTimeCompare([]byte(cookie.Value), []byte(header)) == 1
 }

@@ -3,6 +3,7 @@ package handlers
 import (
 	"database/sql"
 	"encoding/json"
+	"log"
 	"net/http"
 	"strings"
 
@@ -20,7 +21,8 @@ type ServicesHandler struct {
 func (h *ServicesHandler) List(w http.ResponseWriter, r *http.Request) {
 	units, err := h.DBus.ListUnits()
 	if err != nil {
-		http.Error(w, "failed to list units: "+err.Error(), http.StatusInternalServerError)
+		log.Printf("dbus list units: %v", err)
+		http.Error(w, "failed to list units", http.StatusInternalServerError)
 		return
 	}
 	// Filter to only service units by default
@@ -46,7 +48,8 @@ func (h *ServicesHandler) action(w http.ResponseWriter, r *http.Request, fn func
 		return
 	}
 	if err := fn(name); err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
+		log.Printf("service action on %q: %v", name, err)
+		http.Error(w, "service operation failed", http.StatusBadRequest)
 		return
 	}
 	if session != nil {

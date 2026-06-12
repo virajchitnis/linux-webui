@@ -10,10 +10,12 @@ import (
 )
 
 // JournalWSHandler streams journalctl output to WebSocket clients.
-type JournalWSHandler struct{}
+type JournalWSHandler struct {
+	AcceptOpts *websocket.AcceptOptions
+}
 
 func (h *JournalWSHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	c, err := websocket.Accept(w, r, &websocket.AcceptOptions{InsecureSkipVerify: true})
+	c, err := websocket.Accept(w, r, h.AcceptOpts)
 	if err != nil {
 		return
 	}

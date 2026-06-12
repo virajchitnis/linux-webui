@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"encoding/json"
+	"log"
 	"net/http"
 	"strconv"
 	"syscall"
@@ -15,7 +16,8 @@ type ProcessHandler struct{}
 func (h *ProcessHandler) List(w http.ResponseWriter, r *http.Request) {
 	procs, err := process.List()
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		log.Printf("process list: %v", err)
+		http.Error(w, "failed to list processes", http.StatusInternalServerError)
 		return
 	}
 	w.Header().Set("Content-Type", "application/json")
@@ -46,7 +48,8 @@ func (h *ProcessHandler) Kill(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err := process.Kill(pid, sig); err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
+		log.Printf("kill pid %d: %v", pid, err)
+		http.Error(w, "failed to send signal", http.StatusBadRequest)
 		return
 	}
 	w.WriteHeader(http.StatusNoContent)
@@ -66,7 +69,8 @@ func (h *ProcessHandler) Renice(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	if err := process.Renice(pid, body.Priority); err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
+		log.Printf("renice pid %d: %v", pid, err)
+		http.Error(w, "failed to renice process", http.StatusBadRequest)
 		return
 	}
 	w.WriteHeader(http.StatusNoContent)

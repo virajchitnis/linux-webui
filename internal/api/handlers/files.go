@@ -3,6 +3,7 @@ package handlers
 import (
 	"encoding/json"
 	"errors"
+	"log"
 	"net/http"
 	"strings"
 
@@ -25,7 +26,8 @@ func (h *FilesHandler) List(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, "forbidden", http.StatusForbidden)
 			return
 		}
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		log.Printf("files list %q: %v", path, err)
+		http.Error(w, "failed to list directory", http.StatusInternalServerError)
 		return
 	}
 	w.Header().Set("Content-Type", "application/json")
@@ -44,9 +46,10 @@ func (h *FilesHandler) Read(w http.ResponseWriter, r *http.Request) {
 		case errors.Is(err, files.ErrEscape):
 			http.Error(w, "forbidden", http.StatusForbidden)
 		case errors.Is(err, files.ErrTooLarge):
-			http.Error(w, err.Error(), http.StatusRequestEntityTooLarge)
+			http.Error(w, "file too large", http.StatusRequestEntityTooLarge)
 		default:
-			http.Error(w, err.Error(), http.StatusInternalServerError)
+			log.Printf("files read %q: %v", path, err)
+			http.Error(w, "failed to read file", http.StatusInternalServerError)
 		}
 		return
 	}

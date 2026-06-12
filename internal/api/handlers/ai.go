@@ -14,8 +14,9 @@ import (
 
 // AIHandler handles the /ws/ai WebSocket endpoint.
 type AIHandler struct {
-	Client  *ollama.Client
-	Metrics *metrics.Collector
+	Client     *ollama.Client
+	Metrics    *metrics.Collector
+	AcceptOpts *websocket.AcceptOptions
 }
 
 type aiIncoming struct {
@@ -31,9 +32,7 @@ type aiOutgoing struct {
 }
 
 func (h *AIHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	conn, err := websocket.Accept(w, r, &websocket.AcceptOptions{
-		OriginPatterns: []string{"*"},
-	})
+	conn, err := websocket.Accept(w, r, h.AcceptOpts)
 	if err != nil {
 		return
 	}

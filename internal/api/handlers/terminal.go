@@ -16,8 +16,9 @@ import (
 
 // TerminalHandler manages PTY sessions over WebSocket.
 type TerminalHandler struct {
-	Manager *terminal.Manager
-	DB      *sql.DB
+	Manager    *terminal.Manager
+	DB         *sql.DB
+	AcceptOpts *websocket.AcceptOptions
 }
 
 // New allocates a new terminal session ID.
@@ -41,7 +42,7 @@ func (h *TerminalHandler) Connect(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	c, err := websocket.Accept(w, r, &websocket.AcceptOptions{InsecureSkipVerify: true})
+	c, err := websocket.Accept(w, r, h.AcceptOpts)
 	if err != nil {
 		return
 	}

@@ -50,6 +50,12 @@ func migrate(db *sql.DB) error {
 		locked_until DATETIME
 	);
 
+	CREATE TABLE IF NOT EXISTS brute_force_user (
+		username     TEXT    PRIMARY KEY,
+		attempts     INTEGER NOT NULL DEFAULT 0,
+		locked_until DATETIME
+	);
+
 	CREATE TABLE IF NOT EXISTS audit_log (
 		id         INTEGER PRIMARY KEY AUTOINCREMENT,
 		user_id    INTEGER REFERENCES users(id) ON DELETE SET NULL,

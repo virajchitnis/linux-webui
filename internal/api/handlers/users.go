@@ -3,6 +3,7 @@ package handlers
 import (
 	"database/sql"
 	"encoding/json"
+	"log"
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
@@ -18,7 +19,8 @@ type UsersHandler struct {
 func (h *UsersHandler) ListUsers(w http.ResponseWriter, r *http.Request) {
 	list, err := users.ListUsers()
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		log.Printf("list users: %v", err)
+		http.Error(w, "failed to list users", http.StatusInternalServerError)
 		return
 	}
 	w.Header().Set("Content-Type", "application/json")
@@ -28,7 +30,8 @@ func (h *UsersHandler) ListUsers(w http.ResponseWriter, r *http.Request) {
 func (h *UsersHandler) ListGroups(w http.ResponseWriter, r *http.Request) {
 	list, err := users.ListGroups()
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		log.Printf("list groups: %v", err)
+		http.Error(w, "failed to list groups", http.StatusInternalServerError)
 		return
 	}
 	w.Header().Set("Content-Type", "application/json")
@@ -40,12 +43,14 @@ func (h *UsersHandler) CreateUser(w http.ResponseWriter, r *http.Request) {
 		Username string `json:"username"`
 		Password string `json:"password"`
 	}
+	r.Body = http.MaxBytesReader(w, r.Body, 1<<20)
 	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
 		http.Error(w, "bad request", http.StatusBadRequest)
 		return
 	}
 	if err := users.CreateUser(body.Username); err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
+		log.Printf("create user %q: %v", body.Username, err)
+		http.Error(w, "failed to create user", http.StatusBadRequest)
 		return
 	}
 	if body.Password != "" {
@@ -61,7 +66,8 @@ func (h *UsersHandler) CreateUser(w http.ResponseWriter, r *http.Request) {
 func (h *UsersHandler) DeleteUser(w http.ResponseWriter, r *http.Request) {
 	username := chi.URLParam(r, "username")
 	if err := users.DeleteUser(username); err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
+		log.Printf("delete user %q: %v", username, err)
+		http.Error(w, "failed to delete user", http.StatusBadRequest)
 		return
 	}
 	sess := middleware.SessionFromContext(r.Context())
@@ -76,12 +82,14 @@ func (h *UsersHandler) SetPassword(w http.ResponseWriter, r *http.Request) {
 	var body struct {
 		Password string `json:"password"`
 	}
+	r.Body = http.MaxBytesReader(w, r.Body, 1<<20)
 	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
 		http.Error(w, "bad request", http.StatusBadRequest)
 		return
 	}
 	if err := users.SetPassword(username, body.Password); err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
+		log.Printf("set password for %q: %v", username, err)
+		http.Error(w, "failed to set password", http.StatusBadRequest)
 		return
 	}
 	sess := middleware.SessionFromContext(r.Context())

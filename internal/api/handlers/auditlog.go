@@ -3,6 +3,7 @@ package handlers
 import (
 	"database/sql"
 	"encoding/json"
+	"log"
 	"net/http"
 	"strconv"
 
@@ -24,7 +25,8 @@ func (h *AuditLogHandler) List(w http.ResponseWriter, r *http.Request) {
 	}
 	entries, err := auth.GetAuditLog(h.DB, limit)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		log.Printf("audit log query: %v", err)
+		http.Error(w, "failed to read audit log", http.StatusInternalServerError)
 		return
 	}
 	if entries == nil {

@@ -29,14 +29,19 @@ func (h *AuthHandler) Login(w http.ResponseWriter, r *http.Request) {
 	}
 
 	ip := middleware.ClientIP(r)
-	if auth.IsLockedOut(h.DB, ip) {
+	if auth.IsLockedOut(h.DB, ip) || auth.IsLockedOutUsername(h.DB, body.Username) {
 		http.Error(w, "too many failed attempts", http.StatusTooManyRequests)
 		return
 	}
 
+	recordFailure := func() {
+		_ = auth.RecordFailedLogin(h.DB, ip, 5, 15)
+		_ = auth.RecordFailedLoginUsername(h.DB, body.Username, 5, 15)
+	}
+
 	user, err := auth.GetUserByUsername(h.DB, body.Username)
 	if err != nil || !auth.VerifyPassword(user.PasswordHash, body.Password) {
-		_ = auth.RecordFailedLogin(h.DB, ip, 5, 15)
+		recordFailure()
 		http.Error(w, "invalid credentials", http.StatusUnauthorized)
 		return
 	}
@@ -52,7 +57,7 @@ func (h *AuthHandler) Login(w http.ResponseWriter, r *http.Request) {
 		if !ok {
 			// Try recovery code.
 			if err := auth.UseRecoveryCode(h.DB, user.ID, body.TOTPCode); err != nil {
-				_ = auth.RecordFailedLogin(h.DB, ip, 5, 15)
+				recordFailure()
 				http.Error(w, "invalid credentials", http.StatusUnauthorized)
 				return
 			}
@@ -60,6 +65,7 @@ func (h *AuthHandler) Login(w http.ResponseWriter, r *http.Request) {
 	}
 
 	_ = auth.ResetFailedLogins(h.DB, ip)
+	_ = auth.ResetFailedLoginsUsername(h.DB, body.Username)
 	sessionID, err := auth.CreateSession(h.DB, user.ID, ip, r.UserAgent())
 	if err != nil {
 		http.Error(w, "internal error", http.StatusInternalServerError)
