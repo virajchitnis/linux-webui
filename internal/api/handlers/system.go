@@ -3,6 +3,7 @@ package handlers
 import (
 	"database/sql"
 	"encoding/json"
+	"log"
 	"net/http"
 	"os"
 	"os/exec"
@@ -23,7 +24,10 @@ type SystemHandler struct {
 func (h *SystemHandler) Info(w http.ResponseWriter, r *http.Request) {
 	hostname, _ := os.Hostname()
 	kernelVersion := readKernelVersion()
-	snap := h.Collector.Latest()
+	var snap *metrics.Snapshot
+	if h.Collector != nil {
+		snap = h.Collector.Latest()
+	}
 
 	info := map[string]any{
 		"hostname":        hostname,
@@ -48,6 +52,10 @@ func (h *SystemHandler) Info(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *SystemHandler) Metrics(w http.ResponseWriter, r *http.Request) {
+	if h.Collector == nil {
+		http.Error(w, "metrics unavailable", http.StatusServiceUnavailable)
+		return
+	}
 	snap := h.Collector.Latest()
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(snap)
@@ -66,7 +74,8 @@ func (h *SystemHandler) Reboot(w http.ResponseWriter, r *http.Request) {
 	}
 	cmd := exec.Command("/usr/bin/sudo", "/sbin/reboot")
 	if err := cmd.Run(); err != nil {
-		http.Error(w, "reboot failed: "+err.Error(), http.StatusInternalServerError)
+		log.Printf("reboot: %v", err)
+		http.Error(w, "reboot failed", http.StatusInternalServerError)
 		return
 	}
 	w.WriteHeader(http.StatusNoContent)

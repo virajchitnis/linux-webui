@@ -25,11 +25,7 @@ func IsLockedOut(db *sql.DB, ip string) bool {
 	if err != nil || !lockedUntil.Valid {
 		return false
 	}
-	t, err := time.Parse("2006-01-02 15:04:05", lockedUntil.String)
-	if err != nil {
-		return false
-	}
-	return time.Now().Before(t)
+	return parseAndCheck(lockedUntil.String)
 }
 
 func ResetFailedLogins(db *sql.DB, ip string) error {
@@ -57,11 +53,18 @@ func IsLockedOutUsername(db *sql.DB, username string) bool {
 	if err != nil || !lockedUntil.Valid {
 		return false
 	}
-	t, err := time.Parse("2006-01-02 15:04:05", lockedUntil.String)
-	if err != nil {
-		return false
+	return parseAndCheck(lockedUntil.String)
+}
+
+// parseAndCheck parses a datetime string (SQLite may return RFC 3339 or space-separated)
+// and returns true if the time is in the future.
+func parseAndCheck(s string) bool {
+	for _, layout := range []string{time.RFC3339, "2006-01-02 15:04:05"} {
+		if t, err := time.Parse(layout, s); err == nil {
+			return time.Now().UTC().Before(t.UTC())
+		}
 	}
-	return time.Now().Before(t)
+	return false
 }
 
 func ResetFailedLoginsUsername(db *sql.DB, username string) error {

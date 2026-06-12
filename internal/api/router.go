@@ -83,7 +83,7 @@ func NewRouter(opts RouterOptions) http.Handler {
 		sysHandler := &handlers.SystemHandler{Collector: opts.Collector, Version: opts.Version, DB: opts.DB}
 		r.Get("/api/system/info", sysHandler.Info)
 		r.Get("/api/system/metrics", sysHandler.Metrics)
-		r.Post("/api/system/reboot", sysHandler.Reboot)
+		r.With(adminMW).Post("/api/system/reboot", sysHandler.Reboot)
 		r.Get("/api/capabilities", caps.Handler())
 
 		// WebSocket: metrics stream
