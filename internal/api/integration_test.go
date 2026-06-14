@@ -1448,6 +1448,38 @@ func TestTerminalWS_Connect(t *testing.T) {
 	}
 }
 
+func TestAuditLog_List(t *testing.T) {
+	ts := newTestServer(t)
+	ts.setup(t, "admin", "testpass123!")
+	csrf := ts.login(t, "admin", "testpass123!")
+
+	resp := ts.get(t, "/api/admin/audit")
+	defer resp.Body.Close()
+	if resp.StatusCode != http.StatusOK {
+		t.Fatalf("audit log: expected 200, got %d", resp.StatusCode)
+	}
+	var entries []map[string]any
+	if err := json.NewDecoder(resp.Body).Decode(&entries); err != nil {
+		t.Fatalf("audit log: invalid JSON: %v", err)
+	}
+	_ = csrf
+}
+
+func TestAuditLog_Limit(t *testing.T) {
+	ts := newTestServer(t)
+	ts.setup(t, "admin", "testpass123!")
+	ts.login(t, "admin", "testpass123!")
+
+	resp, err := ts.client.Get(ts.baseURL() + "/api/admin/audit?limit=10")
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer resp.Body.Close()
+	if resp.StatusCode != http.StatusOK {
+		t.Fatalf("audit log limit: expected 200, got %d", resp.StatusCode)
+	}
+}
+
 func TestTerminalNew_RequiresAdmin(t *testing.T) {
 	// Create a readonly user and try to create a terminal.
 	f, _ := os.CreateTemp("", "lwui-term-*.db")

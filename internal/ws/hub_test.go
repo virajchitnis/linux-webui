@@ -145,6 +145,32 @@ func TestReadEnvelope_ServerReceives(t *testing.T) {
 	c.Close(websocket.StatusNormalClosure, "")
 }
 
+func TestValidateUpgrade_ForbiddenOrigin(t *testing.T) {
+	req, _ := http.NewRequest(http.MethodGet, "/", nil)
+	req.Header.Set("Origin", "https://evil.com:8443")
+	_, err := ValidateUpgrade(req, nil, "localhost")
+	if err == nil {
+		t.Error("ValidateUpgrade with foreign origin should return error")
+	}
+}
+
+func TestValidateUpgrade_AllowedOrigin(t *testing.T) {
+	req, _ := http.NewRequest(http.MethodGet, "/", nil)
+	req.Header.Set("Origin", "https://localhost:8443")
+	_, err := ValidateUpgrade(req, nil, "localhost")
+	if err != nil {
+		t.Errorf("ValidateUpgrade with localhost origin should not error: %v", err)
+	}
+}
+
+func TestValidateUpgrade_NoOrigin(t *testing.T) {
+	req, _ := http.NewRequest(http.MethodGet, "/", nil)
+	_, err := ValidateUpgrade(req, nil, "localhost")
+	if err != nil {
+		t.Errorf("ValidateUpgrade with no origin should not error: %v", err)
+	}
+}
+
 func TestCloseWithErr(t *testing.T) {
 	_, wsURL := wsEcho(t, http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		c, err := websocket.Accept(w, r, &websocket.AcceptOptions{InsecureSkipVerify: true})
