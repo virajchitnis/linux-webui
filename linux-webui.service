@@ -1,0 +1,25 @@
+[Unit]
+Description=linux-webui server administration panel
+After=network.target dbus.service
+Wants=dbus.service
+
+[Service]
+Type=simple
+User=linux-webui
+Group=linux-webui
+ExecStart=/usr/local/bin/linux-webui --config /etc/linux-webui/config.toml
+Restart=on-failure
+RestartSec=5
+
+# Security hardening
+NoNewPrivileges=yes
+ProtectSystem=strict
+ReadWritePaths=/etc/linux-webui
+PrivateTmp=yes
+ProtectHome=yes
+RestrictNamespaces=yes
+RestrictRealtime=yes
+RestrictSUIDSGID=yes
+
+[Install]
+WantedBy=multi-user.target

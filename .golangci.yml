@@ -1,0 +1,23 @@
+version: "2"
+
+linters:
+  settings:
+    errcheck:
+      exclude-functions:
+        # Parsing fixed-format kernel data (/proc, journald); errors are impossible for well-formed input.
+        - fmt.Sscanf
+        # Writing to http.ResponseWriter after headers are flushed; errors are unactionable.
+        - fmt.Fprintf
+        - fmt.Fprintln
+        - (net/http.ResponseWriter).Write
+        - (*encoding/json.Encoder).Encode
+
+  exclusions:
+    rules:
+      # Deferred Close/CloseNow/Rollback return values are intentionally ignored (standard Go idiom).
+      - linters: [errcheck]
+        text: "Error return value of `.*\\.(Close(Now)?|Rollback)` is not checked"
+      # In test files, unchecked json.Decode, os.Remove/RemoveAll, and WriteString are idiomatic.
+      - linters: [errcheck]
+        path: "_test\\.go$"
+        text: "Error return value of `.*\\.(Decode|Remove|RemoveAll|WriteString)` is not checked"

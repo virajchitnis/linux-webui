@@ -1,0 +1,185 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - master
+      - 'claude/**'
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  test:
+    name: Go tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+          cache: true
+
+      - name: Vet
+        run: go vet ./...
+
+      - name: Test
+        run: go test -race -coverprofile=/tmp/cover.out -coverpkg=./internal/... ./...
+
+      - name: Coverage gate (≥70%)
+        run: |
+          COVERAGE=$(go tool cover -func=/tmp/cover.out | awk '/^total:/{print $3}' | tr -d '%')
+          echo "Total coverage: ${COVERAGE}%"
+          awk -v cov="$COVERAGE" 'BEGIN{ if (cov+0 < 70) { print "Coverage " cov "% is below the 70% threshold"; exit 1 } }'
+
+  frontend:
+    name: Frontend build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+
+      - name: Install
+        run: npm ci
+        working-directory: web
+
+      - name: Build
+        run: npm run build
+        working-directory: web
+
+  build:
+    name: Production binary
+    runs-on: ubuntu-latest
+    needs: [test, frontend]
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+          cache: true
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+
+      - name: Install frontend deps
+        run: npm ci
+        working-directory: web
+
+      - name: Build frontend
+        run: npm run build
+        working-directory: web
+
+      - name: Build binary
+        run: >
+          go build
+          -tags production
+          -ldflags "-X main.version=ci-${{ github.sha }}"
+          -o linux-webui
+          ./cmd/linux-webui
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: linux-webui-${{ github.sha }}
+          path: linux-webui
+          retention-days: 7
+
+  e2e:
+    name: E2E tests
+    runs-on: ubuntu-latest
+    needs: []
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+          cache: true
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+
+      - name: Install frontend deps
+        run: npm ci
+        working-directory: web
+
+      - name: Build frontend
+        run: npm run build
+        working-directory: web
+
+      - name: Build binary
+        run: >
+          go build
+          -tags production
+          -ldflags "-X main.version=e2e"
+          -o linux-webui
+          ./cmd/linux-webui
+
+      - name: Install e2e deps
+        run: npm ci
+        working-directory: e2e
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium
+        working-directory: e2e
+
+      - name: Start server
+        run: |
+          mkdir -p /tmp/lwui-e2e/tls
+          cp e2e/fixtures/server.toml /tmp/lwui-e2e/config.toml
+          cd /tmp/lwui-e2e && $GITHUB_WORKSPACE/linux-webui --config /tmp/lwui-e2e/config.toml \
+            > /tmp/lwui-e2e/server.log 2>&1 &
+          echo $! > /tmp/lwui-e2e/server.pid
+          for i in $(seq 1 30); do
+            curl -sk https://127.0.0.1:8443/health > /dev/null 2>&1 && echo "Server ready after ${i}s" && exit 0
+            sleep 1
+          done
+          echo "Server did not start in time. Logs:"
+          cat /tmp/lwui-e2e/server.log
+          exit 1
+
+      - name: Run Playwright tests
+        run: npx playwright test
+        working-directory: e2e
+
+      - name: Show server logs on failure
+        if: failure()
+        run: cat /tmp/lwui-e2e/server.log || true
+
+      - name: Stop server
+        if: always()
+        run: kill "$(cat /tmp/lwui-e2e/server.pid)" 2>/dev/null || true
+
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: playwright-report
+          path: e2e/playwright-report/
+          retention-days: 7
+
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+          cache: false
+
+      - uses: golangci/golangci-lint-action@v7
+        with:
+          version: v2.5.0

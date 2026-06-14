@@ -1,0 +1,30 @@
+# Stage 1: Build frontend (Vite outputs to ../ui/dist relative to web/)
+FROM node:20-bookworm-slim AS frontend
+WORKDIR /build/web
+COPY web/package*.json ./
+RUN npm ci
+COPY web/ ./
+RUN npm run build
+# output lands at /build/ui/dist
+
+# Stage 2: Build Go binary with embedded frontend
+FROM golang:1.25-bookworm AS builder
+WORKDIR /build
+COPY go.mod go.sum ./
+RUN go mod download
+COPY . .
+COPY --from=frontend /build/ui/dist ./ui/dist
+RUN go build -tags production -ldflags "-X main.version=e2e" -o linux-webui ./cmd/linux-webui
+
+# Stage 3: E2E test runner (Playwright + Chromium)
+FROM mcr.microsoft.com/playwright:v1.60.0-jammy
+WORKDIR /app
+
+COPY --from=builder /build/linux-webui ./linux-webui
+COPY e2e/ ./e2e/
+RUN cd e2e && npm ci
+
+COPY e2e/run-e2e.sh ./run-e2e.sh
+RUN chmod +x run-e2e.sh
+
+CMD ["/app/run-e2e.sh"]

@@ -1,0 +1,32 @@
+# linux-webui configuration — copy to /etc/linux-webui/config.toml
+
+[server]
+listen      = "0.0.0.0:8443"       # HTTPS listen address
+http_listen = "0.0.0.0:8080"       # HTTP→HTTPS redirect listener
+tls_cert    = "/etc/linux-webui/tls/cert.pem"
+tls_key     = "/etc/linux-webui/tls/key.pem"
+# acme_domain = "myserver.example.com"  # Uncomment to use Let's Encrypt
+
+[auth]
+session_timeout_minutes = 30  # Idle session timeout
+max_login_attempts      = 5   # Failed logins before lockout
+lockout_minutes         = 15  # How long the lockout lasts
+bcrypt_cost             = 12  # Higher = slower but safer (12–14 recommended)
+terminal_reconnect_seconds = 30  # How long a PTY survives browser disconnect
+
+[features]
+terminal_enabled      = true
+file_browser_enabled  = true
+file_browser_roots    = ["/etc", "/var/log", "/home"]
+max_terminal_sessions = 3
+
+[ollama]
+enabled  = false                     # Set to true after installing Ollama
+endpoint = "http://127.0.0.1:11434"
+model    = "llama3.2"
+
+[monitoring]
+prometheus = false  # Expose /metrics in Prometheus text format (auth required)
+
+[audit]
+retention_days = 90  # 0 = keep forever

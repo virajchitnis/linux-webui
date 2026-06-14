@@ -1,0 +1,43 @@
+package auth
+
+import (
+	"crypto/rand"
+	"crypto/subtle"
+	"encoding/hex"
+	"net/http"
+)
+
+const csrfCookieName = "linux_webui_csrf"
+const csrfHeaderName = "X-CSRF-Token"
+
+func GenerateCSRFToken() (string, error) {
+	b := make([]byte, 32)
+	if _, err := rand.Read(b); err != nil {
+		return "", err
+	}
+	return hex.EncodeToString(b), nil
+}
+
+func SetCSRFCookie(w http.ResponseWriter, token string, secure bool) {
+	http.SetCookie(w, &http.Cookie{
+		Name:     csrfCookieName,
+		Value:    token,
+		Path:     "/",
+		HttpOnly: false, // JavaScript must read this to send in header
+		Secure:   secure,
+		SameSite: http.SameSiteStrictMode,
+		MaxAge:   86400,
+	})
+}
+
+func ValidateCSRF(r *http.Request) bool {
+	cookie, err := r.Cookie(csrfCookieName)
+	if err != nil {
+		return false
+	}
+	header := r.Header.Get(csrfHeaderName)
+	if cookie.Value == "" || header == "" {
+		return false
+	}
+	return subtle.ConstantTimeCompare([]byte(cookie.Value), []byte(header)) == 1
+}

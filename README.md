@@ -1,187 +1,224 @@
-linux-webui (beta)
-==================
-A simple web control panel for Linux servers.
+# linux-webui
 
-This project was originally developed and tested on Gentoo. Most Linux distros are similar enough that the control panel should work on any of them. If you get it running on a distro not listed below, please open an issue so the OS support list can be updated.
+A modern, secure web-based administration panel for Linux servers. Built with Go and React, it replaces the traditional SSH terminal workflow with a clean browser interface for daily server management tasks.
 
-OS support
-----------
+[![Go 1.22+](https://img.shields.io/badge/Go-1.22%2B-00ADD8?logo=go)](https://go.dev)
+[![License](https://img.shields.io/badge/license-MIT-blue)](LICENSE.md)
 
-* Gentoo
+## Features
 
-Requirements
-------------
+**System**
+- Live dashboard: CPU, memory, disk, network I/O charts (1-second updates)
+- Hardware sensor readings (CPU temperature, fan RPM)
+- System reboot with countdown
 
-* Apache 2.4+ with the following modules enabled:
-  * `mod_php` (or `php-fpm`)
-  * `mod_headers` (required for security headers in `.htaccess`)
-  * `mod_rewrite` (required if you enable the HTTPS redirect in `.htaccess`)
-* PHP 7.0 or later (uses `random_bytes()`, `password_hash()`, and the array
-  form of `session_set_cookie_params()` — none of which are available in PHP 5)
-* `sudo` access for the web server user, scoped to specific commands only
-  (see the Sudoers section below)
+**Services**
+- Dynamic systemd service discovery (all installed units, not a fixed list)
+- Start / stop / restart / enable / disable via D-Bus (no sudo required)
+- Real-time status polling
 
-Installation via Git (Recommended)
------------------------------------
+**Networking**
+- Network interface stats (addresses, RX/TX bytes, MTU, state)
+- WireGuard peer management (if `wg` is installed)
+- Tailscale status and peer table (if `tailscale` is installed)
 
-### 1. Install Apache and PHP
+**Logs & Terminal**
+- Live journal log viewer with unit and priority filters
+- Full web terminal (xterm.js + PTY), audit-logged
 
-Install Apache 2.4+ and PHP 7.0+ using your distro's package manager.
+**Packages & Processes**
+- APT package manager: list upgradable, apply updates with live streaming output
+- Process manager: list, kill, renice
 
-### 2. Clone the repository
+**Security & Users**
+- Local user and group management
+- UFW firewall rule management
+- Two-factor authentication (TOTP) with QR enrollment and recovery codes
+- Per-user session management with revocation
+- Full audit log of all state-changing actions
 
-Clone into your web server's document root (or a subdirectory of it):
+**Files & Cron**
+- Read-only file browser (path-jailed to `/etc`, `/var/log`, `/home`)
+- Cron job editor with human-readable schedule descriptions
+
+**AI Assistant**
+- Embedded Ollama chat panel with live server context injection
+- Explain log lines, analyze performance, get command suggestions
+- Suggested commands are never auto-executed
+
+**Docker** (optional)
+- Container list, start/stop/restart/remove
+- Real-time resource stats and log streaming
+
+## Requirements
+
+- Ubuntu 22.04+ / Debian 12+ / any systemd Linux distribution
+- Go 1.22+ (to build from source)
+- Node.js 20+ (to build from source)
+
+## Quick Install (binary)
+
+```bash
+curl -fsSL https://github.com/virajchitnis/linux-webui/releases/latest/download/install.sh | sudo bash
+```
+
+Then visit `https://your-server:8443` and complete the first-run wizard.
+
+## Manual Installation
+
+1. Download the pre-built binary from [Releases](https://github.com/virajchitnis/linux-webui/releases).
+2. Run the installer:
+   ```bash
+   sudo ./linux-webui --install
+   ```
+   This creates the `linux-webui` system user, polkit rule, sudoers entries, and a systemd service unit.
+3. Start the service:
+   ```bash
+   sudo systemctl enable --now linux-webui
+   ```
+4. Navigate to `https://your-server:8443` and complete the setup wizard (set your admin password).
+
+## Build from Source
 
 ```bash
 git clone https://github.com/virajchitnis/linux-webui.git
 cd linux-webui
+make build
+# Produces: ./linux-webui
 ```
 
-### 3. Install the sudoers drop-in
+Prerequisites: Go 1.22+, Node.js 20+, npm.
 
-linux-webui needs to run `service`, `pmap`, and `rc-update` as root. A
-ready-made drop-in file listing only those specific commands is provided —
-**do not** use the old `NOPASSWD: ALL` pattern, which grants unrestricted
-root access to the entire web server process.
+## Configuration
+
+The config file lives at `/etc/linux-webui/config.toml` (created by the installer). All settings have sensible defaults. Example:
+
+```toml
+[server]
+listen     = "0.0.0.0:8443"
+tls_cert   = "/etc/linux-webui/tls/cert.pem"
+tls_key    = "/etc/linux-webui/tls/key.pem"
+http_listen = "0.0.0.0:8080"  # redirects to HTTPS
+
+[auth]
+session_timeout_minutes = 30
+max_login_attempts      = 5
+lockout_minutes         = 15
+bcrypt_cost             = 12
+
+[features]
+terminal_enabled      = true
+file_browser_enabled  = true
+file_browser_roots    = ["/etc", "/var/log", "/home"]
+max_terminal_sessions = 3
+
+[ollama]
+enabled  = false
+endpoint = "http://127.0.0.1:11434"
+model    = "llama3.2"
+
+[monitoring]
+prometheus = false   # expose /metrics (auth required)
+
+[audit]
+retention_days = 90  # 0 = keep forever
+```
+
+A self-signed TLS certificate is generated automatically on first run. To use Let's Encrypt, set `[server] acme_domain = "myserver.example.com"`.
+
+## Optional Features
+
+### AI Assistant (Ollama)
+
+Install [Ollama](https://ollama.com) and pull a model:
 
 ```bash
-# Review the file before installing
-cat config/sudoers.example
-
-# Edit it if needed (see notes below), then install
-sudo cp config/sudoers.example /etc/sudoers.d/linux-webui
-sudo chmod 0440 /etc/sudoers.d/linux-webui
-sudo visudo -c          # verify syntax before relying on it
+curl -fsSL https://ollama.com/install.sh | sh
+ollama pull llama3.2
 ```
 
-Things to check in `config/sudoers.example` before installing:
+The panel auto-detects Ollama on startup. Set `ollama.enabled = true` in config to force-enable it, or leave it unset for auto-detection.
 
-| Setting | Gentoo | Debian / Ubuntu | CentOS / RHEL |
-|---------|--------|-----------------|---------------|
-| Web server user | `apache` | `www-data` | `apache` |
-| Path to `service` | `/sbin/service` | `/usr/sbin/service` | `/sbin/service` |
-| Path to `pmap` | `/usr/bin/pmap` | `/usr/bin/pmap` | `/usr/bin/pmap` |
+### Docker
 
-Verify the paths on your system with `which service` and `which pmap`.
-
-### 4. Set the admin password
-
-The application ships with a default password of `changeme`. **Change it
-before the server is reachable by anyone else.**
-
-Generate a bcrypt hash for your chosen password:
+Add the `linux-webui` user to the `docker` group:
 
 ```bash
-php -r "echo password_hash('your_password_here', PASSWORD_DEFAULT);"
+sudo usermod -aG docker linux-webui
+sudo systemctl restart linux-webui
 ```
 
-Open `config/credentials.php` and replace the value of `AUTH_PASSWORD_HASH`
-with the output. You can also change `AUTH_USERNAME` from `admin` if you prefer.
+> **Security note**: Docker group membership is equivalent to root access. Any process in the group can escape to root via a bind mount. Consider disabling the web terminal when Docker is enabled, or restricting access to admin users only.
 
-### 5. Set permissions on the data directory
+### WireGuard
 
-The `data/` directory is used to store runtime files (login rate-limit
-counters, the update log). It must be writable by the web server user:
+Ensure `wg` and `wg-quick` are in PATH. The panel auto-detects and shows the WireGuard module.
+
+### Tailscale
+
+Ensure the `tailscale` daemon is running. The panel reads status via the local daemon socket.
+
+### Let's Encrypt (ACME)
+
+```toml
+[server]
+listen      = "0.0.0.0:443"
+http_listen = "0.0.0.0:80"   # required for HTTP-01 challenge
+acme_domain = "myserver.example.com"
+```
+
+The binary handles the ACME HTTP-01 challenge itself on port 80. Certificates are cached in `/etc/linux-webui/tls/` and renewed automatically.
+
+### Prometheus
+
+```toml
+[monitoring]
+prometheus = true
+```
+
+Then point Prometheus at `https://your-server:8443/metrics`. Authentication (session cookie) is required.
+
+## User Management
+
+Users are stored in SQLite (not the system `/etc/passwd`). To add a user via the web UI: go to **Users** → **Add User**. To manage roles, log in as admin and edit the user.
+
+## Upgrading
 
 ```bash
-# Gentoo / CentOS / RHEL
-sudo chown apache:apache data/
-
-# Debian / Ubuntu
-sudo chown www-data:www-data data/
+# Replace the binary
+sudo systemctl stop linux-webui
+sudo cp linux-webui /usr/local/bin/linux-webui
+sudo systemctl start linux-webui
 ```
 
-The directory is already protected from direct web access by `.htaccess`.
+Database migrations run automatically on startup — downtime is minimal.
 
-### 6. Enable required Apache modules
+## Security Notes
+
+- Runs as the `linux-webui` user (non-root) with a targeted polkit rule for systemd management
+- No `sh -c` anywhere — all subprocess calls use `[]string` args to prevent command injection
+- TLS 1.2+ with strong cipher suites; HTTP auto-redirects to HTTPS
+- CSRF protection on all state-changing requests
+- Brute-force lockout (5 failures in 60 seconds → 15-minute lockout)
+- Session cookies are `HttpOnly`, `Secure`, `SameSite=Strict`
+- All state-changing actions written to the audit log
+- Recommended: change the default port (8443) via firewall rules; restrict access to trusted IPs
+
+## Uninstall
 
 ```bash
-# Debian / Ubuntu (using a2enmod)
-sudo a2enmod headers rewrite
-sudo systemctl restart apache2
-
-# Gentoo — ensure the following are in your Apache USE flags or httpd.conf:
-#   LoadModule headers_module modules/mod_headers.so
-#   LoadModule rewrite_module modules/mod_rewrite.so
+sudo ./linux-webui --uninstall
 ```
 
-### 7. Set up HTTPS (recommended)
+This removes the `linux-webui` user, polkit rule, sudoers entry, and systemd unit. The data directory `/etc/linux-webui/` is left intact for manual review.
 
-Running a server control panel over plain HTTP means your session cookie and
-all commands are visible on the network. Once you have a TLS certificate in
-place, enable HTTPS enforcement by uncommenting two blocks in `.htaccess`:
+## Contributing
 
-```apache
-# Uncomment to redirect all HTTP traffic to HTTPS
-RewriteEngine On
-RewriteCond %{HTTPS} off
-RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+1. Fork and clone the repository
+2. Run `make dev` for hot-reload development
+3. Run `make test` and `make lint` before submitting a PR
+4. See `CLAUDE.md` for architecture details and the security checklist
 
-# Uncomment to send HSTS header (tells browsers to always use HTTPS)
-Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains"
-```
+## License
 
-> **Note:** Do not enable HSTS until HTTPS is fully working. A misconfigured
-> HSTS header can lock browsers out of the site entirely.
-
-### 8. Log in
-
-Navigate to the site in your browser. You will be presented with a login page.
-Use the credentials set in step 4.
-
-Future updates to the web application can be installed by clicking the **Update** button on the About page.
-
----
-
-Installation via tar.gz (Not recommended)
-------------------------------------------
-
-1. Install Apache 2.4+ and PHP 7.0+.
-2. Download the tar.gz for the latest release into your web server directory:
-   ```bash
-   wget https://github.com/virajchitnis/linux-webui/archive/v1.1.3.tar.gz
-   ```
-   (Replace `v1.1.3` with the version you wish to download.)
-3. Extract: `tar -zxvf v1.1.3.tar.gz`
-4. Delete the archive: `rm v1.1.3.tar.gz`
-5. Follow steps 3–8 from the Git installation above.
-
-Future updates must be applied by downloading and extracting a newer tar.gz
-over the current directory. Using Git is strongly recommended as it allows
-one-click updates from the About page.
-
----
-
-Security overview
------------------
-
-The following protections are built into this version of linux-webui:
-
-| Area | Protection |
-|------|-----------|
-| **Authentication** | Session-based login with bcrypt password hashing. Every page requires a valid session. |
-| **Session cookies** | `HttpOnly` and `SameSite=Strict` flags set on every session cookie. `Secure` flag is set automatically when the request arrives over HTTPS. |
-| **Session timeout** | Sessions expire after 30 minutes of inactivity. |
-| **CSRF** | All state-changing operations (service control, reboot, git update) require a POST request with a per-session CSRF token. |
-| **Brute force** | Login is rate-limited by IP address. 5 failed attempts trigger a 15-minute lockout stored server-side — clearing cookies does not reset it. |
-| **Command injection** | Service operations use a strict whitelist of allowed service names and operations. No user input is interpolated into shell commands. |
-| **File read** | `catfile.php` only serves the update log. All other paths return 403. |
-| **XSS** | All shell command output is passed through `htmlspecialchars()` before being written into HTML. |
-| **Security headers** | `X-Frame-Options`, `X-Content-Type-Options`, `X-XSS-Protection`, `Content-Security-Policy`, and `Referrer-Policy` are set via `.htaccess`. |
-| **sudo scope** | The web server user is granted sudo access only to the specific `service`, `pmap`, `rc-update show`, and `reboot` commands that linux-webui actually uses. |
-| **Sensitive directories** | The `config/` and `data/` directories are blocked from direct web access via `.htaccess`. |
-
-### Remaining considerations
-
-* **HTTPS**: Strongly recommended. Session cookies and all control traffic are
-  sent in plaintext over HTTP. See step 7 above.
-* **Shared NAT**: The IP-based brute-force lockout treats all users behind the
-  same NAT address as one. On a shared network, one user's failed attempts can
-  lock out others. This is acceptable for a single-admin control panel.
-* **sudo scope for reboot**: `/sbin/reboot` is permitted without a password.
-  The reboot action is protected by authentication and a CSRF token in the
-  application layer, but the underlying command is still available to the web
-  server user via sudo.
-* **git update over HTTP**: If your git remote is an HTTP (not HTTPS) URL, a
-  `git pull` is vulnerable to a man-in-the-middle attack delivering malicious
-  code. Ensure your remote URL uses `https://` or SSH.
+See [LICENSE.md](LICENSE.md).
