@@ -27,7 +27,7 @@ func TestReadFile(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	defer os.Remove(f.Name())
+	t.Cleanup(func() { _ = os.Remove(f.Name()) })
 	_, _ = f.WriteString("  42000  \n")
 	f.Close()
 
@@ -46,7 +46,7 @@ func TestReadFile_Missing(t *testing.T) {
 
 func TestReadMilliDeg(t *testing.T) {
 	f, _ := os.CreateTemp("", "millideg-*.txt")
-	defer os.Remove(f.Name())
+	t.Cleanup(func() { _ = os.Remove(f.Name()) })
 	_, _ = f.WriteString("52000")
 	f.Close()
 
@@ -65,7 +65,7 @@ func TestReadMilliDeg_Missing(t *testing.T) {
 
 func TestReadInt(t *testing.T) {
 	f, _ := os.CreateTemp("", "readint-*.txt")
-	defer os.Remove(f.Name())
+	t.Cleanup(func() { _ = os.Remove(f.Name()) })
 	_, _ = f.WriteString("1200")
 	f.Close()
 
@@ -79,7 +79,7 @@ func TestFileExists(t *testing.T) {
 	f, _ := os.CreateTemp("", "exists-*.txt")
 	name := f.Name()
 	f.Close()
-	defer os.Remove(name)
+	t.Cleanup(func() { _ = os.Remove(name) })
 
 	if !fileExists(name) {
 		t.Error("fileExists(existing) should be true")

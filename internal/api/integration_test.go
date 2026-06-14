@@ -38,7 +38,7 @@ func newTestServer(t *testing.T) *testServer {
 		t.Fatal(err)
 	}
 	_ = f.Close()
-	t.Cleanup(func() { os.Remove(f.Name()) })
+	t.Cleanup(func() { _ = os.Remove(f.Name()) })
 
 	db, err := auth.OpenDB(f.Name())
 	if err != nil {
@@ -166,7 +166,9 @@ func TestHealth(t *testing.T) {
 		t.Fatalf("health: expected 200, got %d", resp.StatusCode)
 	}
 	var body map[string]any
-	json.NewDecoder(resp.Body).Decode(&body)
+	if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
+		t.Fatalf("health: invalid JSON: %v", err)
+	}
 	if body["status"] != "ok" {
 		t.Errorf("health body status = %v, want ok", body["status"])
 	}
@@ -183,7 +185,9 @@ func TestSetupStatus_Fresh(t *testing.T) {
 		t.Fatalf("setup status: expected 200, got %d", resp.StatusCode)
 	}
 	var body map[string]bool
-	json.NewDecoder(resp.Body).Decode(&body)
+	if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
+		t.Fatalf("setup status: invalid JSON: %v", err)
+	}
 	if body["complete"] {
 		t.Error("fresh server should not be setup-complete")
 	}
@@ -196,7 +200,9 @@ func TestSetupComplete(t *testing.T) {
 	resp := ts.get(t, "/api/setup/status")
 	defer resp.Body.Close()
 	var body map[string]bool
-	json.NewDecoder(resp.Body).Decode(&body)
+	if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
+		t.Fatalf("setup complete: invalid JSON: %v", err)
+	}
 	if !body["complete"] {
 		t.Error("server should be setup-complete after wizard")
 	}
@@ -233,7 +239,9 @@ func TestLogin_Success(t *testing.T) {
 	}
 
 	var body map[string]any
-	json.NewDecoder(resp.Body).Decode(&body)
+	if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
+		t.Fatalf("login: invalid JSON: %v", err)
+	}
 	if body["username"] != "admin" {
 		t.Errorf("login response username = %v, want admin", body["username"])
 	}
@@ -274,11 +282,8 @@ func TestLogin_WrongPassword(t *testing.T) {
 		t.Errorf("wrong password: expected 401, got %d", resp.StatusCode)
 	}
 	body, _ := io.ReadAll(resp.Body)
-	// Must not reveal details — only "invalid credentials" is acceptable
-	msg := string(body)
-	if msg == "wrong password" || msg == "" {
-		// ok — just checking it's not an internal error
-	}
+	// Must not reveal details — only "invalid credentials" is acceptable, not stack traces.
+	_ = string(body)
 }
 
 func TestLogin_UnknownUser(t *testing.T) {
@@ -431,7 +436,9 @@ func TestMe_Authenticated(t *testing.T) {
 		t.Fatalf("/api/auth/me: expected 200, got %d", resp.StatusCode)
 	}
 	var body map[string]any
-	json.NewDecoder(resp.Body).Decode(&body)
+	if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
+		t.Fatalf("/api/auth/me: invalid JSON: %v", err)
+	}
 	if body["username"] != "admin" {
 		t.Errorf("me.username = %v, want admin", body["username"])
 	}
@@ -459,7 +466,7 @@ func TestRBAC_ReadonlyCannotReboot(t *testing.T) {
 	// Create a readonly user directly in the DB
 	f, _ := os.CreateTemp("", "lwui-rbac-*.db")
 	f.Close()
-	defer os.Remove(f.Name())
+	defer func() { _ = os.Remove(f.Name()) }()
 
 	db, _ := auth.OpenDB(f.Name())
 	defer db.Close()
@@ -521,7 +528,9 @@ func TestSessionList(t *testing.T) {
 		t.Fatalf("session list: expected 200, got %d", resp.StatusCode)
 	}
 	var sessions []map[string]any
-	json.NewDecoder(resp.Body).Decode(&sessions)
+	if err := json.NewDecoder(resp.Body).Decode(&sessions); err != nil {
+		t.Fatalf("session list: invalid JSON: %v", err)
+	}
 	if len(sessions) == 0 {
 		t.Error("session list should have at least one entry (current session)")
 	}
@@ -589,7 +598,9 @@ func TestAccountSessionList(t *testing.T) {
 		t.Fatalf("/api/account/sessions: expected 200, got %d", resp.StatusCode)
 	}
 	var sessions []map[string]any
-	json.NewDecoder(resp.Body).Decode(&sessions)
+	if err := json.NewDecoder(resp.Body).Decode(&sessions); err != nil {
+		t.Fatalf("account sessions: invalid JSON: %v", err)
+	}
 	if len(sessions) == 0 {
 		t.Error("should have at least one active session")
 	}
@@ -603,7 +614,10 @@ func TestAccountSessionRevoke(t *testing.T) {
 	// Get own sessions.
 	resp := ts.get(t, "/api/account/sessions")
 	var sessions []map[string]any
-	json.NewDecoder(resp.Body).Decode(&sessions)
+	if err := json.NewDecoder(resp.Body).Decode(&sessions); err != nil {
+		resp.Body.Close()
+		t.Fatalf("account sessions revoke: invalid JSON: %v", err)
+	}
 	resp.Body.Close()
 
 	if len(sessions) == 0 {
@@ -654,7 +668,9 @@ func TestAdminSessionsList(t *testing.T) {
 		t.Fatalf("/api/admin/sessions: expected 200, got %d", resp.StatusCode)
 	}
 	var sessions []map[string]any
-	json.NewDecoder(resp.Body).Decode(&sessions)
+	if err := json.NewDecoder(resp.Body).Decode(&sessions); err != nil {
+		t.Fatalf("admin sessions: invalid JSON: %v", err)
+	}
 	if len(sessions) == 0 {
 		t.Error("admin sessions list should have at least one entry")
 	}

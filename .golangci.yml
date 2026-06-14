@@ -17,3 +17,7 @@ linters:
       # Deferred Close/CloseNow/Rollback return values are intentionally ignored (standard Go idiom).
       - linters: [errcheck]
         text: "Error return value of `.*\\.(Close(Now)?|Rollback)` is not checked"
+      # In test files, unchecked json.Decode, os.Remove/RemoveAll, and WriteString are idiomatic.
+      - linters: [errcheck]
+        path: "_test\\.go$"
+        text: "Error return value of `.*\\.(Decode|Remove|RemoveAll|WriteString)` is not checked"

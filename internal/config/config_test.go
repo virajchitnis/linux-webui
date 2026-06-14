@@ -44,7 +44,7 @@ func TestLoad_ValidTOML(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	defer os.Remove(f.Name())
+	t.Cleanup(func() { _ = os.Remove(f.Name()) })
 
 	_, _ = f.WriteString(`
 [server]
@@ -90,7 +90,7 @@ func TestLoad_InvalidTOML(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	defer os.Remove(f.Name())
+	t.Cleanup(func() { _ = os.Remove(f.Name()) })
 	_, _ = f.WriteString("this is [not valid toml {{{{")
 	f.Close()
 

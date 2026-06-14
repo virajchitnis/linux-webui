@@ -19,7 +19,7 @@ func openTestDB(t *testing.T) *sql.DB {
 		t.Fatal(err)
 	}
 	_ = f.Close()
-	t.Cleanup(func() { os.Remove(f.Name()) })
+	t.Cleanup(func() { _ = os.Remove(f.Name()) })
 
 	db, err := auth.OpenDB(f.Name())
 	if err != nil {

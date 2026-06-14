@@ -15,7 +15,7 @@ func makeRoot(t *testing.T) string {
 	if err != nil {
 		t.Fatal(err)
 	}
-	t.Cleanup(func() { os.RemoveAll(root) })
+	t.Cleanup(func() { _ = os.RemoveAll(root) })
 
 	// Create some entries inside
 	_ = os.MkdirAll(filepath.Join(root, "subdir"), 0755)
@@ -85,7 +85,7 @@ func TestJailEscape_SiblingDir(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	defer os.RemoveAll(parent)
+	t.Cleanup(func() { _ = os.RemoveAll(parent) })
 
 	jailRoot := filepath.Join(parent, "log")
 	sibling := filepath.Join(parent, "log2")
@@ -103,7 +103,7 @@ func TestJailSymlinkEscape(t *testing.T) {
 	root := makeRoot(t)
 	// Create a symlink that points outside the jail
 	outside, _ := os.MkdirTemp("", "outside-*")
-	defer os.RemoveAll(outside)
+	t.Cleanup(func() { _ = os.RemoveAll(outside) })
 
 	symlinkPath := filepath.Join(root, "evil-link")
 	_ = os.Symlink(outside, symlinkPath)

@@ -74,8 +74,8 @@ QUOTED="hello world"
 	if err != nil {
 		t.Fatal(err)
 	}
-	defer os.Remove(f.Name())
-	f.WriteString(content)
+	t.Cleanup(func() { _ = os.Remove(f.Name()) })
+	_, _ = f.WriteString(content)
 	f.Close()
 
 	m := parseOSRelease(f.Name())

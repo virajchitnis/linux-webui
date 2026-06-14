@@ -196,9 +196,7 @@ func TestGenerate_ContextCancel(t *testing.T) {
 		w.Header().Set("Content-Type", "application/x-ndjson")
 		w.WriteHeader(http.StatusOK)
 		// Block forever — context cancellation should abort.
-		select {
-		case <-r.Context().Done():
-		}
+		<-r.Context().Done()
 	}))
 	defer srv.Close()
 
