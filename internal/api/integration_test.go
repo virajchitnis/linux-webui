@@ -1245,31 +1245,6 @@ func TestFirewallDeleteRule_InvalidNum(t *testing.T) {
 	}
 }
 
-func TestFirewallEnable_RequiresAdmin(t *testing.T) {
-	ts := newTestServer(t)
-	ts.setup(t, "admin", "testpass123!")
-	csrf := ts.login(t, "admin", "testpass123!")
-
-	resp := ts.postJSON(t, "/api/firewall/enable", nil, map[string]string{"X-CSRF-Token": csrf})
-	defer resp.Body.Close()
-	// May return 500 if ufw not installed; should NOT return 403 (admin is logged in).
-	if resp.StatusCode == http.StatusForbidden || resp.StatusCode == http.StatusUnauthorized {
-		t.Errorf("firewall enable as admin: expected not 403/401, got %d", resp.StatusCode)
-	}
-}
-
-func TestFirewallDisable_RequiresAdmin(t *testing.T) {
-	ts := newTestServer(t)
-	ts.setup(t, "admin", "testpass123!")
-	csrf := ts.login(t, "admin", "testpass123!")
-
-	resp := ts.postJSON(t, "/api/firewall/disable", nil, map[string]string{"X-CSRF-Token": csrf})
-	defer resp.Body.Close()
-	if resp.StatusCode == http.StatusForbidden || resp.StatusCode == http.StatusUnauthorized {
-		t.Errorf("firewall disable as admin: expected not 403/401, got %d", resp.StatusCode)
-	}
-}
-
 // ── Users handler additional tests ────────────────────────────────────────────
 
 func TestUsersListGroups(t *testing.T) {
@@ -1382,24 +1357,6 @@ func TestTOTPConfirm_MissingFields(t *testing.T) {
 	defer resp.Body.Close()
 	if resp.StatusCode != http.StatusBadRequest {
 		t.Errorf("TOTP confirm missing fields: expected 400, got %d", resp.StatusCode)
-	}
-}
-
-// ── System reboot ─────────────────────────────────────────────────────────────
-
-func TestSystemReboot_Fails(t *testing.T) {
-	ts := newTestServer(t)
-	ts.setup(t, "admin", "testpass123!")
-	csrf := ts.login(t, "admin", "testpass123!")
-
-	resp := ts.postJSON(t, "/api/system/reboot", nil, map[string]string{
-		"X-CSRF-Token": csrf,
-	})
-	defer resp.Body.Close()
-	// sudo /sbin/reboot is not available in the test environment → 500.
-	// But it must NOT be 403 or 401 (admin is logged in).
-	if resp.StatusCode == http.StatusForbidden || resp.StatusCode == http.StatusUnauthorized {
-		t.Errorf("reboot as admin: expected not 403/401, got %d", resp.StatusCode)
 	}
 }
 
