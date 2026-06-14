@@ -25,7 +25,13 @@ jobs:
         run: go vet ./...
 
       - name: Test
-        run: go test -race ./...
+        run: go test -race -coverprofile=/tmp/cover.out -coverpkg=./internal/... ./...
+
+      - name: Coverage gate (≥70%)
+        run: |
+          COVERAGE=$(go tool cover -func=/tmp/cover.out | awk '/^total:/{print $3}' | tr -d '%')
+          echo "Total coverage: ${COVERAGE}%"
+          awk -v cov="$COVERAGE" 'BEGIN{ if (cov+0 < 70) { print "Coverage " cov "% is below the 70% threshold"; exit 1 } }'
 
   frontend:
     name: Frontend build
